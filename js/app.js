@@ -7,16 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const App = {
-    init() {
+    async init() {
         this.purgeStaleCache();
-        Storage.initCloud();
+        await Storage.initCloud();
         this.updateBrandTexts();
         this.initAmbientCanvas();
         this.bindNavigation();
         this.registerServiceWorker();
         if (window.Sound) window.Sound.init();
 
-        // Check if relationship already started
+        // Check if relationship already started (now 100% cloud synced before UI decision!)
         const startDate = Storage.getStartDate();
 
         if (startDate) {

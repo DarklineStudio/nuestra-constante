@@ -20,12 +20,12 @@ const Storage = {
     supabaseClient: null,
 
     // Initialize Supabase Cloud Connection & Realtime Listener + Heartbeat Polling
-    initCloud() {
+    async initCloud() {
         if (window.AppConfig && AppConfig.supabase && AppConfig.supabase.url && AppConfig.supabase.url !== "YOUR_SUPABASE_URL") {
             if (window.supabase) {
                 this.supabaseClient = window.supabase.createClient(AppConfig.supabase.url, AppConfig.supabase.anonKey);
                 console.log('⚡ Supabase Cloud Database conectado exitosamente');
-                this.syncFromCloud();
+                await this.syncFromCloud();
                 this.subscribeToRealtime();
                 this.startHeartbeatPolling();
             }
