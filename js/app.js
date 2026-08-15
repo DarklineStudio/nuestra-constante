@@ -278,18 +278,23 @@ function showLuxuryConfirm({ title = 'NUESTRA CONSTANTE', message, icon = '❓',
             return;
         }
 
-        iconElem.textContent = icon;
-        titleElem.textContent = title;
-        msgElem.innerHTML = message.replace(/\n/g, '<br>');
-        btnConfirm.querySelector('span').textContent = confirmText;
-        btnCancel.querySelector('span').textContent = cancelText;
-        btnCancel.classList.remove('hidden');
+        if (iconElem) iconElem.textContent = icon;
+        if (titleElem) titleElem.textContent = title;
+        if (msgElem) msgElem.innerHTML = typeof message === 'string' ? message.replace(/\n/g, '<br>') : message;
+        if (btnConfirm && btnConfirm.querySelector('span')) {
+            btnConfirm.querySelector('span').textContent = confirmText;
+        }
+        if (btnCancel && btnCancel.querySelector('span')) {
+            btnCancel.querySelector('span').textContent = cancelText;
+        }
+        if (btnCancel) btnCancel.classList.remove('hidden');
 
         const cleanup = () => {
             modal.classList.add('hidden');
-            btnConfirm.removeEventListener('click', onConfirm);
-            btnCancel.removeEventListener('click', onCancel);
-            btnClose.removeEventListener('click', onCancel);
+            modal.style.display = 'none';
+            if (btnConfirm) btnConfirm.removeEventListener('click', onConfirm);
+            if (btnCancel) btnCancel.removeEventListener('click', onCancel);
+            if (btnClose) btnClose.removeEventListener('click', onCancel);
         };
 
         const onConfirm = () => {
@@ -302,10 +307,12 @@ function showLuxuryConfirm({ title = 'NUESTRA CONSTANTE', message, icon = '❓',
             resolve(false);
         };
 
-        btnConfirm.addEventListener('click', onConfirm);
-        btnCancel.addEventListener('click', onCancel);
-        btnClose.addEventListener('click', onCancel);
+        if (btnConfirm) btnConfirm.addEventListener('click', onConfirm);
+        if (btnCancel) btnCancel.addEventListener('click', onCancel);
+        if (btnClose) btnClose.addEventListener('click', onCancel);
+
         modal.classList.remove('hidden');
+        modal.style.display = 'flex';
     });
 }
 

@@ -68,21 +68,60 @@ const Timeline = {
         };
     },
 
-    handlePhotosSelect(e) {
+    async handlePhotosSelect(e) {
         const files = Array.from(e.target.files || []);
         if (files.length === 0) return;
 
-        let loadedCount = 0;
-        files.forEach(file => {
+        this.selectedPhotos = [];
+        for (const file of files) {
+            try {
+                const rawUrl = await this.readFileAsDataURL(file);
+                const compressedUrl = await this.compressImage(rawUrl, 1200, 0.75);
+                this.selectedPhotos.push(compressedUrl);
+            } catch (err) {
+                console.warn('Error processing photo:', err);
+            }
+        }
+        this.renderFormPhotosPreview();
+    },
+
+    readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = (event) => {
-                this.selectedPhotos.push(event.target.result);
-                loadedCount++;
-                if (loadedCount === files.length) {
-                    this.renderFormPhotosPreview();
-                }
-            };
+            reader.onload = (ev) => resolve(ev.target.result);
+            reader.onerror = (err) => reject(err);
             reader.readAsDataURL(file);
+        });
+    },
+
+    compressImage(dataUrl, maxDimension = 1200, quality = 0.75) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxDimension || height > maxDimension) {
+                    if (width > height) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    } else {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const compressed = canvas.toDataURL('image/jpeg', quality);
+                resolve(compressed);
+            };
+            img.onerror = () => resolve(dataUrl);
+            img.src = dataUrl;
         });
     },
 
@@ -147,10 +186,21 @@ const Timeline = {
             isLiked: true
         };
 
-        Storage.addTimelineEvent(newEvent);
+        try {
+            Storage.addTimelineEvent(newEvent);
+        } catch (err) {
+            console.error('Error saving timeline event:', err);
+        }
+
         this.selectedPhotos = [];
+        const photoInput = document.getElementById('eventPhotos');
+        if (photoInput) photoInput.value = '';
+        this.renderFormPhotosPreview();
+
+        const modal = document.getElementById('timelineModal');
+        if (modal) modal.classList.add('hidden');
+
         this.render();
-        document.getElementById('timelineModal').classList.add('hidden');
 
         showLuxuryNotice({
             icon: '📸',
