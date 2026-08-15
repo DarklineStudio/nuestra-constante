@@ -189,6 +189,8 @@ const Storage = {
             let gallery = this.getPaintingGallery();
             gallery = gallery.filter(item => String(item.id) !== String(id));
             localStorage.setItem(this.KEYS.PAINTING_GALLERY, JSON.stringify(gallery));
+            // Always clear legacy single painting to prevent 2-step deletion fallback bug
+            localStorage.removeItem(this.KEYS.PAINTING);
         } catch (e) {}
         this.syncToCloud();
     },

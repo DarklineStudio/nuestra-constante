@@ -744,7 +744,7 @@ const Painting = {
         };
 
         Storage.savePaintingToGallery(newArt);
-        Storage.savePainting(dataUrl);
+        try { localStorage.removeItem(Storage.KEYS.PAINTING); } catch (e) {}
         this.renderMuseumGallery();
         
         // Show Explicit Luxury Notice Confirmation Popup
@@ -889,9 +889,7 @@ const Painting = {
 
         if (confirmed) {
             Storage.deletePaintingFromGallery(id);
-            if (String(id) === 'art_legacy') {
-                try { localStorage.removeItem(Storage.KEYS.PAINTING); } catch (e) {}
-            }
+            try { localStorage.removeItem(Storage.KEYS.PAINTING); } catch (e) {}
             this.renderMuseumGallery();
 
             showLuxuryNotice({
