@@ -21,11 +21,21 @@ const App = {
 
         if (startDate) {
             Storage.ensureDataIntegrity();
-            // Already accepted -> Show Main App directly & hide delivery reset button forever
             document.getElementById('introSection')?.classList.add('hidden');
             document.getElementById('mainSection')?.classList.remove('hidden');
             document.getElementById('bottomNav')?.classList.remove('hidden');
-            document.getElementById('deliveryResetBox')?.classList.add('hidden');
+
+            // 24-Hour Smart Delivery Window Guard
+            const elapsedMs = Date.now() - startDate;
+            const elapsedHours = elapsedMs / (1000 * 60 * 60);
+
+            if (elapsedHours >= 24) {
+                // More than 24h passed -> hide reset button permanently to protect memories
+                if (deliveryResetBox) deliveryResetBox.classList.add('hidden');
+            } else {
+                // Less than 24h -> keep reset button accessible for delivery
+                if (deliveryResetBox) deliveryResetBox.classList.remove('hidden');
+            }
 
             Counter.start();
             Timeline.init();
@@ -106,10 +116,10 @@ const App = {
 
     async confirmDeliveryReset() {
         const confirmed = await showLuxuryConfirm({
-            icon: '🎁',
-            title: 'PREPARAR ENTREGA A ELLA',
-            message: '¿Deseas reiniciar la aplicación para que vuelva a la pantalla de la propuesta inicial?<br><br>Al entregársela a ella y presionar <strong>"SÍ, ACEPTO ❤️"</strong>, el tiempo oficial comenzará a correr en vivo a partir de ese segundo exacto.',
-            confirmText: 'Sí, reiniciar para entrega',
+            icon: '⚠️',
+            title: '¿ESTÁS SEGURO DE REINICIAR TODO?',
+            message: 'Se borrarán todos los datos de prueba y la aplicación volverá a la pantalla inicial de la propuesta romántica.<br><br>Al entregársela a ella y presionar <strong>"SÍ, ACEPTO ❤️"</strong>, el tiempo oficial comenzará a correr en vivo a partir de ese segundo exacto.',
+            confirmText: 'Sí, reiniciar todo',
             cancelText: 'Cancelar'
         });
 

@@ -94,16 +94,15 @@ const Storage = {
 
     // Start Date Management
     getStartDate() {
-        const val = localStorage.getItem(this.KEYS.START_DATE) || localStorage.getItem('ourtime_relationshipStartDate');
+        const val = localStorage.getItem(this.KEYS.START_DATE);
         return val ? parseInt(val, 10) : null;
     },
 
     setStartDate(timestamp) {
-        if (!this.getStartDate()) {
-            localStorage.setItem(this.KEYS.START_DATE, timestamp.toString());
-            localStorage.setItem('ourtime_relationshipStartDate', timestamp.toString());
-            this.syncToCloud();
-        }
+        const ts = (timestamp || Date.now()).toString();
+        localStorage.setItem(this.KEYS.START_DATE, ts);
+        localStorage.removeItem('ourtime_relationshipStartDate');
+        this.syncToCloud();
     },
 
     // Timeline Events Management
@@ -328,9 +327,11 @@ const Storage = {
     },
 
     async resetForDelivery() {
-        // Clear all LocalStorage keys
+        // Clear all LocalStorage keys (both active and legacy)
         localStorage.removeItem(this.KEYS.START_DATE);
+        localStorage.removeItem('ourtime_relationshipStartDate');
         localStorage.removeItem(this.KEYS.TIMELINE_EVENTS);
+        localStorage.removeItem('ourtime_timelineEvents');
         localStorage.removeItem(this.KEYS.MEMORIES);
         localStorage.removeItem(this.KEYS.PAINTING);
         localStorage.removeItem(this.KEYS.PAINTING_GALLERY);
