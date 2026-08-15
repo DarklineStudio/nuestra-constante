@@ -40,12 +40,58 @@ const Storage = {
         }, 2000);
     },
 
-    async pollCloudState() {
-        if (!this.supabaseClient) return;
-
+    // Direct Native Anti-Cache HTTP Fetch Engine for Supabase REST API
+    async fetchCloudDirect() {
         try {
-            const { data, error } = await this.supabaseClient.from('relationship_state').select('updated_at, start_date').single();
-            if (data && !error) {
+            const url = `https://lssecgytpirrplzdgiyk.supabase.co/rest/v1/relationship_state?select=*&_t=${Date.now()}`;
+            const headers = {
+                'apikey': 'sb_publishable_ho9eFiczRfwDzG6UCBwOUQ_li6AEl91',
+                'Authorization': 'Bearer sb_publishable_ho9eFiczRfwDzG6UCBwOUQ_li6AEl91',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
+            };
+            const response = await fetch(url, { method: 'GET', headers, cache: 'no-store' });
+            if (response.ok) {
+                const list = await response.json();
+                if (Array.isArray(list) && list.length > 0) {
+                    return list[0];
+                }
+            }
+        } catch (e) {
+            console.warn('Direct fetch error:', e);
+        }
+        return null;
+    },
+
+    async saveCloudDirect(payload) {
+        try {
+            const url = `https://lssecgytpirrplzdgiyk.supabase.co/rest/v1/relationship_state`;
+            const headers = {
+                'apikey': 'sb_publishable_ho9eFiczRfwDzG6UCBwOUQ_li6AEl91',
+                'Authorization': 'Bearer sb_publishable_ho9eFiczRfwDzG6UCBwOUQ_li6AEl91',
+                'Prefer': 'resolution=merge-duplicates',
+                'Content-Type': 'application/json'
+            };
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error('❌ Error al guardar en Supabase Cloud:', response.status, errText);
+            } else {
+                console.log('☁️ Sincronización exitosa en Supabase Cloud');
+            }
+        } catch (e) {
+            console.warn('Direct save error:', e);
+        }
+    },
+
+    async pollCloudState() {
+        try {
+            const data = await this.fetchCloudDirect();
+            if (data) {
                 const cloudUpdatedStr = data.updated_at || '';
                 const cloudStartDate = data.start_date;
 
@@ -104,11 +150,14 @@ const Storage = {
 
     // Sync all state from Supabase Cloud to LocalStorage
     async syncFromCloud() {
-        if (!this.supabaseClient) return;
-
         try {
-            const { data, error } = await this.supabaseClient.from('relationship_state').select('*').single();
-            if (data && !error) {
+            let data = await this.fetchCloudDirect();
+            if (!data && this.supabaseClient) {
+                const res = await this.supabaseClient.from('relationship_state').select('*').single();
+                if (res && res.data) data = res.data;
+            }
+
+            if (data) {
                 // If cloud start_date is NULL / missing -> FORCE WIPE LOCAL MEMORY ON SAFARI/IPHONE!
                 if (data.start_date === null || data.start_date === undefined || data.start_date === '') {
                     localStorage.removeItem(this.KEYS.START_DATE);
@@ -157,8 +206,6 @@ const Storage = {
 
     // Save full state to Supabase Cloud
     async syncToCloud() {
-        if (!this.supabaseClient) return;
-
         try {
             const payload = {
                 id: 1, // Single row pair state
@@ -170,7 +217,7 @@ const Storage = {
                 updated_at: new Date().toISOString()
             };
 
-            await this.supabaseClient.from('relationship_state').upsert(payload);
+            await this.saveCloudDirect(payload);
         } catch (e) {
             console.log('Cloud upload info:', e);
         }
@@ -441,23 +488,19 @@ const Storage = {
             console.warn('LocalStorage clear error:', e);
         }
 
-        // Clear Supabase Cloud Database row as well if connected
-        if (this.supabaseClient) {
-            try {
-                await this.supabaseClient
-                    .from('relationship_state')
-                    .upsert({
-                        id: 1,
-                        start_date: null,
-                        timeline_events: [],
-                        memories: [],
-                        painting_data: null,
-                        achievements_state: {},
-                        updated_at: new Date().toISOString()
-                    });
-            } catch (e) {
-                console.warn('Cloud reset error:', e);
-            }
+        // Clear Supabase Cloud Database row directly
+        try {
+            await this.saveCloudDirect({
+                id: 1,
+                start_date: null,
+                timeline_events: [],
+                memories: [],
+                painting_data: null,
+                achievements_state: {},
+                updated_at: new Date().toISOString()
+            });
+        } catch (e) {
+            console.warn('Cloud reset error:', e);
         }
 
         // Hard reload bypassing cache directly to proposal

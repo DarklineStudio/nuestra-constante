@@ -79,7 +79,7 @@ const Timeline = {
         for (const file of files) {
             try {
                 const rawUrl = await this.readFileAsDataURL(file);
-                const compressedUrl = await this.compressImage(rawUrl, 1200, 0.75);
+                const compressedUrl = await this.compressImage(rawUrl, 750, 0.65);
                 this.selectedPhotos.push(compressedUrl);
             } catch (err) {
                 console.warn('Error processing photo:', err);
@@ -97,7 +97,7 @@ const Timeline = {
         });
     },
 
-    compressImage(dataUrl, maxDimension = 1200, quality = 0.75) {
+    compressImage(dataUrl, maxDimension = 750, quality = 0.65) {
         return new Promise((resolve) => {
             const img = new Image();
             img.onload = () => {
