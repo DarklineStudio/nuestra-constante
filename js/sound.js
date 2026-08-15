@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NUESTRA CONSTANTE — SUBTLE LUXURY AUDIO SYSTEM (Web Audio API Synthesizer)
+   NUESTRA CONSTANTE — DUAL SYNTH & HTML5 AUDIO ENGINE (100% iPhone Compatible)
    ========================================================================== */
 
 const Sound = {
@@ -13,29 +13,25 @@ const Sound = {
             }
         }
         if (this.audioCtx && this.audioCtx.state === 'suspended') {
-            this.audioCtx.resume();
+            this.audioCtx.resume().catch(() => {});
         }
         return this.audioCtx;
     },
 
     init() {
-        // Unlock Web Audio API on mobile (iOS Safari / Android Chrome) on first touch
         const unlock = () => {
             const ctx = this.getAudioContext();
             if (ctx && ctx.state === 'suspended') {
-                ctx.resume().then(() => {
-                    // Play inaudible silent micro-tone to wake mobile speaker hardware
-                    try {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        gain.gain.value = 0.0001;
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
-                        osc.start(0);
-                        osc.stop(ctx.currentTime + 0.001);
-                    } catch (e) {}
-                });
+                ctx.resume().catch(() => {});
             }
+            // Pre-play silent micro audio HTML5 element for iOS Safari
+            try {
+                const a = new Audio();
+                a.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+                a.volume = 0.01;
+                a.play().catch(() => {});
+            } catch (e) {}
+
             window.removeEventListener('touchstart', unlock);
             window.removeEventListener('touchend', unlock);
             window.removeEventListener('click', unlock);
@@ -57,149 +53,54 @@ const Sound = {
         }, { passive: true });
     },
 
-    playClick() {
+    playTone(freqList, duration = 0.15, gainVal = 0.15, type = 'sine') {
         try {
             const ctx = this.getAudioContext();
             if (!ctx) return;
 
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(820, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05);
-
-            gain.gain.setValueAtTime(0.08, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
-        } catch (e) {}
-    },
-
-    playSuccess() {
-        try {
-            const ctx = this.getAudioContext();
-            if (!ctx) return;
-
-            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Luxury Chord)
-            notes.forEach((freq, idx) => {
+            const freqs = Array.isArray(freqList) ? freqList : [freqList];
+            freqs.forEach((freq, idx) => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
-
-                gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.06);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.06 + 0.25);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime + idx * 0.06);
-                osc.stop(ctx.currentTime + idx * 0.06 + 0.25);
-            });
-        } catch (e) {}
-    },
-
-    playPopup() {
-        try {
-            const ctx = this.getAudioContext();
-            if (!ctx) return;
-
-            const notes = [587.33, 880.00]; // D5, A5 soft duo bell
-            notes.forEach((freq, idx) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
+                osc.type = type;
                 osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.05);
 
-                gain.gain.setValueAtTime(0.10, ctx.currentTime + idx * 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.05 + 0.18);
+                gain.gain.setValueAtTime(gainVal, ctx.currentTime + idx * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.05 + duration);
 
                 osc.connect(gain);
                 gain.connect(ctx.destination);
 
                 osc.start(ctx.currentTime + idx * 0.05);
-                osc.stop(ctx.currentTime + idx * 0.05 + 0.18);
+                osc.stop(ctx.currentTime + idx * 0.05 + duration);
             });
         } catch (e) {}
+    },
+
+    playClick() {
+        this.playTone([840, 360], 0.06, 0.22, 'sine');
+    },
+
+    playSuccess() {
+        this.playTone([523.25, 659.25, 783.99, 1046.50], 0.28, 0.25, 'sine');
+    },
+
+    playPopup() {
+        this.playTone([587.33, 880.00], 0.20, 0.22, 'sine');
     },
 
     playDrawSparkle() {
-        try {
-            const ctx = this.getAudioContext();
-            if (!ctx) return;
-
-            const freq = 1600 + Math.random() * 800; // 1600Hz - 2400Hz soft magic sparkle
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq * 0.5, ctx.currentTime + 0.03);
-
-            gain.gain.setValueAtTime(0.03, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0005, ctx.currentTime + 0.03);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start();
-            osc.stop(ctx.currentTime + 0.03);
-        } catch (e) {}
+        const freq = 1500 + Math.random() * 900;
+        this.playTone([freq], 0.04, 0.06, 'sine');
     },
 
     playHeart() {
-        try {
-            const ctx = this.getAudioContext();
-            if (!ctx) return;
-
-            const notes = [440.00, 554.37]; // A4, C#5 warm duo
-            notes.forEach((freq, idx) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.04);
-
-                gain.gain.setValueAtTime(0.10, ctx.currentTime + idx * 0.04);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.04 + 0.14);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime + idx * 0.04);
-                osc.stop(ctx.currentTime + idx * 0.04 + 0.14);
-            });
-        } catch (e) {}
+        this.playTone([440.00, 554.37], 0.18, 0.22, 'sine');
     },
 
     playDelete() {
-        try {
-            const ctx = this.getAudioContext();
-            if (!ctx) return;
-
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(360, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.1);
-
-            gain.gain.setValueAtTime(0.035, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start();
-            osc.stop(ctx.currentTime + 0.1);
-        } catch (e) {}
+        this.playTone([380, 160], 0.12, 0.20, 'triangle');
     }
 };
 

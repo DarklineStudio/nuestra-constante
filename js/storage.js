@@ -19,7 +19,7 @@ const Storage = {
 
     supabaseClient: null,
 
-    // Initialize Supabase Cloud Connection & Realtime Listener
+    // Initialize Supabase Cloud Connection & Realtime Listener + Heartbeat Polling
     initCloud() {
         if (window.AppConfig && AppConfig.supabase && AppConfig.supabase.url && AppConfig.supabase.url !== "YOUR_SUPABASE_URL") {
             if (window.supabase) {
@@ -27,19 +27,39 @@ const Storage = {
                 console.log('⚡ Supabase Cloud Database conectado exitosamente');
                 this.syncFromCloud();
                 this.subscribeToRealtime();
+                this.startHeartbeatPolling();
             }
         }
     },
 
-    // Subscribe to realtime database changes across all devices
-    subscribeToRealtime() {
+    startHeartbeatPolling() {
+        if (this.pollingInterval) clearInterval(this.pollingInterval);
+        // Forced 2-second cloud sync polling to guarantee instant updates on mobile Safari & Android Chrome!
+        this.pollingInterval = setInterval(async () => {
+            await this.pollCloudState();
+        }, 2000);
+    },
+
+    async pollCloudState() {
         if (!this.supabaseClient) return;
+
         try {
-            this.supabaseClient
-                .channel('public:relationship_state')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'relationship_state' }, async () => {
-                    console.log('⚡ Sincronización en tiempo real recibida desde la nube');
-                    const wasStartedBefore = !!this.getStartDate();
+            const { data, error } = await this.supabaseClient.from('relationship_state').select('updated_at, start_date').single();
+            if (data && !error) {
+                const cloudUpdatedStr = data.updated_at || '';
+                const cloudStartDate = data.start_date;
+
+                const lastKnownUpdated = localStorage.getItem('nuestraconstante_lastCloudUpdated') || '';
+                const localStartDate = this.getStartDate();
+
+                const startStateChanged = (!!cloudStartDate) !== (!!localStartDate);
+                const cloudDateDiffers = cloudStartDate && localStartDate && String(cloudStartDate) !== String(localStartDate);
+                const contentUpdated = cloudUpdatedStr && cloudUpdatedStr !== lastKnownUpdated;
+
+                if (startStateChanged || cloudDateDiffers || contentUpdated) {
+                    console.log('⚡ Cambio detectado en tiempo real en la nube, forzando actualización...');
+                    localStorage.setItem('nuestraconstante_lastCloudUpdated', cloudUpdatedStr);
+                    const wasStartedBefore = !!localStartDate;
                     await this.syncFromCloud();
                     const isStartedNow = !!this.getStartDate();
 
@@ -55,10 +75,26 @@ const Storage = {
                         return;
                     }
 
-                    // Otherwise refresh counters and components on active screen
+                    // Otherwise refresh UI components on active screen
                     if (window.Counter) window.Counter.update();
                     if (window.Timeline) window.Timeline.render();
                     if (window.Painting) window.Painting.renderMuseumGallery();
+                    if (window.Music) window.Music.render();
+                }
+            }
+        } catch (e) {
+            console.log('Polling check info:', e);
+        }
+    },
+
+    // Subscribe to realtime database changes across all devices
+    subscribeToRealtime() {
+        if (!this.supabaseClient) return;
+        try {
+            this.supabaseClient
+                .channel('public:relationship_state')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'relationship_state' }, async () => {
+                    await this.pollCloudState();
                 })
                 .subscribe();
         } catch (e) {
