@@ -381,7 +381,13 @@ function showLuxuryPrompt({ title = 'Escribir mensaje', subtitle = 'Redacta un m
     });
 }
 
-// Global helper function for inline onclick handlers
+// Global helper functions for inline onclick handlers
+window.App = App;
 function switchTab(tabId) {
     App.switchTab(tabId);
 }
+function confirmDeliveryReset() {
+    App.confirmDeliveryReset();
+}
+window.switchTab = switchTab;
+window.confirmDeliveryReset = confirmDeliveryReset;

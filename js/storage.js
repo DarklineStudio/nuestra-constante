@@ -327,18 +327,11 @@ const Storage = {
     },
 
     async resetForDelivery() {
-        // Clear all LocalStorage keys (both active and legacy)
-        localStorage.removeItem(this.KEYS.START_DATE);
-        localStorage.removeItem('ourtime_relationshipStartDate');
-        localStorage.removeItem(this.KEYS.TIMELINE_EVENTS);
-        localStorage.removeItem('ourtime_timelineEvents');
-        localStorage.removeItem(this.KEYS.MEMORIES);
-        localStorage.removeItem(this.KEYS.PAINTING);
-        localStorage.removeItem(this.KEYS.PAINTING_GALLERY);
-        localStorage.removeItem(this.KEYS.ACHIEVEMENTS);
-        localStorage.removeItem(this.KEYS.CUSTOM_LETTERS);
-        localStorage.removeItem(this.KEYS.MUSIC_DEDICATIONS);
-        localStorage.removeItem('nuestraconstante_publishedCapsules');
+        try {
+            localStorage.clear();
+        } catch (e) {
+            console.warn('LocalStorage clear error:', e);
+        }
 
         // Clear Supabase Cloud Database row as well if connected
         if (this.supabaseClient) {
@@ -359,7 +352,8 @@ const Storage = {
             }
         }
 
-        location.reload();
+        // Hard reload bypassing cache directly to proposal
+        window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();
     }
 };
 
