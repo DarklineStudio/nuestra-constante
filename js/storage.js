@@ -288,6 +288,22 @@ const Storage = {
         return data ? JSON.parse(data) : [];
     },
 
+    addMusicDedication(song) {
+        const songs = this.getMusicDedications();
+        songs.unshift(song);
+        localStorage.setItem(this.KEYS.MUSIC_DEDICATIONS, JSON.stringify(songs));
+        this.syncToCloud();
+        return songs;
+    },
+
+    deleteMusicDedication(id) {
+        let songs = this.getMusicDedications();
+        songs = songs.filter(s => String(s.id) !== String(id));
+        localStorage.setItem(this.KEYS.MUSIC_DEDICATIONS, JSON.stringify(songs));
+        this.syncToCloud();
+        return songs;
+    },
+
     // Published Capsules Management (Immutability Seal)
     getPublishedCapsules() {
         const data = localStorage.getItem('nuestraconstante_publishedCapsules');

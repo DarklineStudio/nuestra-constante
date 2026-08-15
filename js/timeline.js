@@ -14,6 +14,9 @@ const Timeline = {
     },
 
     bindEvents() {
+        if (this.bound) return;
+        this.bound = true;
+
         const btnAdd = document.getElementById('btnAddTimelineEvent');
         const modal = document.getElementById('timelineModal');
         const btnClose = document.getElementById('btnCloseTimelineModal');

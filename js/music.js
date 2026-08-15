@@ -9,6 +9,9 @@ const Music = {
     },
 
     bindEvents() {
+        if (this.bound) return;
+        this.bound = true;
+
         const btnAdd = document.getElementById('btnAddMusicDedication');
         const modal = document.getElementById('musicModal');
         const btnClose = document.getElementById('btnCloseMusicModal');
@@ -16,7 +19,7 @@ const Music = {
 
         if (btnAdd && modal) {
             btnAdd.addEventListener('click', () => {
-                form.reset();
+                if (form) form.reset();
                 modal.classList.remove('hidden');
             });
         }
