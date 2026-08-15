@@ -50,7 +50,7 @@ const Storage = {
         if (this.pollingInterval) clearInterval(this.pollingInterval);
         this.pollingInterval = setInterval(async () => {
             await this.pollCloudState();
-        }, 2000);
+        }, 1000);
     },
 
     // Direct Native Anti-Cache HTTP Fetch Engine for Supabase REST API
@@ -123,7 +123,7 @@ const Storage = {
                     const isStartedNow = !!this.getStartDate();
 
                     if (!wasStartedBefore && isStartedNow) {
-                        window.location.reload();
+                        window.location.href = window.location.origin + window.location.pathname + '?accepted=' + Date.now();
                         return;
                     }
 
