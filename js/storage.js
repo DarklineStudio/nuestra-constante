@@ -19,14 +19,44 @@ const Storage = {
 
     supabaseClient: null,
 
-    // Initialize Supabase Cloud Connection if keys provided in Config
+    // Initialize Supabase Cloud Connection & Realtime Listener
     initCloud() {
         if (window.AppConfig && AppConfig.supabase && AppConfig.supabase.url && AppConfig.supabase.url !== "YOUR_SUPABASE_URL") {
             if (window.supabase) {
                 this.supabaseClient = window.supabase.createClient(AppConfig.supabase.url, AppConfig.supabase.anonKey);
                 console.log('⚡ Supabase Cloud Database conectado exitosamente');
                 this.syncFromCloud();
+                this.subscribeToRealtime();
             }
+        }
+    },
+
+    // Subscribe to realtime database changes across all devices
+    subscribeToRealtime() {
+        if (!this.supabaseClient) return;
+        try {
+            this.supabaseClient
+                .channel('public:relationship_state')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'relationship_state' }, async () => {
+                    console.log('⚡ Sincronización en tiempo real recibida desde la nube');
+                    const wasStartedBefore = !!this.getStartDate();
+                    await this.syncFromCloud();
+                    const isStartedNow = !!this.getStartDate();
+
+                    // If reset was triggered remotely on another device, reload immediately to proposal screen
+                    if (wasStartedBefore && !isStartedNow) {
+                        window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();
+                        return;
+                    }
+
+                    // Otherwise refresh counters and components on active screen
+                    if (window.Counter) window.Counter.update();
+                    if (window.Timeline) window.Timeline.render();
+                    if (window.Painting) window.Painting.renderMuseumGallery();
+                })
+                .subscribe();
+        } catch (e) {
+            console.warn('Realtime subscription info:', e);
         }
     },
 
@@ -37,12 +67,37 @@ const Storage = {
         try {
             const { data, error } = await this.supabaseClient.from('relationship_state').select('*').single();
             if (data && !error) {
-                if (data.start_date) localStorage.setItem(this.KEYS.START_DATE, data.start_date.toString());
-                if (data.timeline_events) localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(data.timeline_events));
-                if (data.memories) localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(data.memories));
-                if (data.painting_data) localStorage.setItem(this.KEYS.PAINTING, data.painting_data);
-                if (data.achievements_state) localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(data.achievements_state));
-                console.log('☁️ Datos sincronizados desde la nube');
+                // Synchronize START_DATE strictly: if null in cloud, clear local devices too!
+                if (data.start_date !== undefined && data.start_date !== null && data.start_date !== '') {
+                    let ts = data.start_date.toString();
+                    if (!/^\d+$/.test(ts)) {
+                        const parsed = Date.parse(ts);
+                        if (!isNaN(parsed)) ts = parsed.toString();
+                    }
+                    localStorage.setItem(this.KEYS.START_DATE, ts);
+                } else {
+                    localStorage.removeItem(this.KEYS.START_DATE);
+                    localStorage.removeItem('ourtime_relationshipStartDate');
+                    localStorage.removeItem('nuestraconstante_relationshipStartDate');
+                }
+
+                if (Array.isArray(data.timeline_events)) {
+                    localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(data.timeline_events));
+                }
+                if (Array.isArray(data.memories)) {
+                    localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(data.memories));
+                }
+                if (data.painting_data !== undefined) {
+                    if (data.painting_data) {
+                        localStorage.setItem(this.KEYS.PAINTING, data.painting_data);
+                    } else {
+                        localStorage.removeItem(this.KEYS.PAINTING);
+                    }
+                }
+                if (data.achievements_state) {
+                    localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(data.achievements_state));
+                }
+                console.log('☁️ Sincronización completa desde Supabase Cloud realizada');
             }
         } catch (e) {
             console.log('Cloud sync info:', e);
@@ -72,10 +127,7 @@ const Storage = {
 
     ensureDataIntegrity() {
         let startDateTs = this.getStartDate();
-        if (!startDateTs) {
-            startDateTs = Date.now();
-            localStorage.setItem(this.KEYS.START_DATE, startDateTs.toString());
-        }
+        if (!startDateTs) return; // Never auto-generate a start date if not accepted yet!
 
         let events = this.getTimelineEvents();
         if (!events || events.length === 0) {
@@ -95,7 +147,12 @@ const Storage = {
     // Start Date Management
     getStartDate() {
         const val = localStorage.getItem(this.KEYS.START_DATE);
-        return val ? parseInt(val, 10) : null;
+        if (!val) return null;
+        if (/^\d+$/.test(val.trim())) {
+            return parseInt(val.trim(), 10);
+        }
+        const parsed = Date.parse(val);
+        return isNaN(parsed) ? null : parsed;
     },
 
     setStartDate(timestamp) {
