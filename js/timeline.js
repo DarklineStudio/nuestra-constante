@@ -204,6 +204,7 @@ const Timeline = {
         if (modal) modal.classList.add('hidden');
 
         this.render();
+        if (window.Sound) window.Sound.playSuccess();
 
         showLuxuryNotice({
             icon: '📸',
@@ -587,6 +588,8 @@ const Timeline = {
         evt.likes = (evt.likes || 0) + (evt.isLiked ? 1 : -1);
         if (evt.likes < 0) evt.likes = 0;
 
+        if (evt.isLiked && window.Sound) window.Sound.playHeart();
+
         localStorage.setItem(Storage.KEYS.TIMELINE_EVENTS, JSON.stringify(events));
         Storage.syncToCloud();
         this.render();
@@ -606,6 +609,7 @@ const Timeline = {
             events = events.filter(e => e.id !== id);
             localStorage.setItem(Storage.KEYS.TIMELINE_EVENTS, JSON.stringify(events));
             Storage.syncToCloud();
+            if (window.Sound) window.Sound.playDelete();
             this.render();
         }
     },

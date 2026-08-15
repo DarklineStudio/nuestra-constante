@@ -14,6 +14,7 @@ const App = {
         this.initAmbientCanvas();
         this.bindNavigation();
         this.registerServiceWorker();
+        if (window.Sound) window.Sound.init();
 
         // Check if relationship already started
         const startDate = Storage.getStartDate();
@@ -224,6 +225,7 @@ const App = {
 // Global Helper Functions replacing browser alert() and confirm() with Luxury Modal
 function showLuxuryNotice({ title = 'NUESTRA CONSTANTE', message, icon = '✨', confirmText = 'Entendido ❤️' }) {
     return new Promise((resolve) => {
+        if (window.Sound) window.Sound.playPopup();
         const modal = document.getElementById('premiumNoticeModal');
         const iconElem = document.getElementById('noticeIcon');
         const titleElem = document.getElementById('noticeTitle');
@@ -264,6 +266,7 @@ function showLuxuryNotice({ title = 'NUESTRA CONSTANTE', message, icon = '✨', 
 
 function showLuxuryConfirm({ title = 'NUESTRA CONSTANTE', message, icon = '❓', confirmText = 'Sí ❤️', cancelText = 'Cancelar' }) {
     return new Promise((resolve) => {
+        if (window.Sound) window.Sound.playPopup();
         const modal = document.getElementById('premiumNoticeModal');
         const iconElem = document.getElementById('noticeIcon');
         const titleElem = document.getElementById('noticeTitle');

@@ -94,6 +94,7 @@ const Music = {
         Storage.addMusicDedication(newSong);
         this.render();
         document.getElementById('musicModal').classList.add('hidden');
+        if (window.Sound) window.Sound.playSuccess();
 
         showLuxuryNotice({
             icon: '🎵',

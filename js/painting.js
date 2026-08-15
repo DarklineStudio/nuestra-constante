@@ -539,6 +539,11 @@ const Painting = {
 
             // Dynamic Animated Floating Particles while drawing (on particleCanvas)
             this.spawnFloatingParticles(coords.x, coords.y);
+
+            // Subtle magic sparkle sound while drawing
+            if (Math.random() < 0.22 && window.Sound) {
+                window.Sound.playDrawSparkle();
+            }
         }
 
         this.ctx.restore();
@@ -746,6 +751,7 @@ const Painting = {
         Storage.savePaintingToGallery(newArt);
         try { localStorage.removeItem(Storage.KEYS.PAINTING); } catch (e) {}
         this.renderMuseumGallery();
+        if (window.Sound) window.Sound.playSuccess();
         
         // Show Explicit Luxury Notice Confirmation Popup
         showLuxuryNotice({
@@ -890,6 +896,7 @@ const Painting = {
         if (confirmed) {
             Storage.deletePaintingFromGallery(id);
             try { localStorage.removeItem(Storage.KEYS.PAINTING); } catch (e) {}
+            if (window.Sound) window.Sound.playDelete();
             this.renderMuseumGallery();
 
             showLuxuryNotice({
