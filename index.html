@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NUESTRA CONSTANTE — Nuestra única constante vital</title>
+
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NUESTRA CONSTANTE">
+    <meta name="description" content="Nuestra historia y el tiempo que elegimos compartir.">
+
+    <!-- Anti-Cache Protection Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Supabase Realtime Database SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Stylesheets with Version Protection -->
+    <link rel="stylesheet" href="css/main.css?v=2026.08.15">
+    <link rel="stylesheet" href="css/animations.css?v=2026.08.15">
+    <link rel="stylesheet" href="css/components.css?v=2026.08.15">
+</head>
+<body>
+    <!-- Background Ambient Canvas for Subtle Sparkles/Dust -->
+    <canvas id="ambientCanvas"></canvas>
+
+    <div id="appContainer">
+
+        <!-- ========================================== -->
+        <!-- 1. FULLSCREEN INTRO & PROPOSAL EXPERIENCE -->
+        <!-- ========================================== -->
+        <section id="introSection" class="fullscreen-overlay active">
+            <canvas id="particlesCanvas"></canvas>
+            
+            <div class="intro-content">
+                <!-- Sequence Step 1 -->
+                <div id="introStep1" class="intro-step active">
+                    <p class="intro-text fade-in-up">Hay momentos que empiezan como cualquier otro...</p>
+                </div>
+
+                <!-- Sequence Step 2 -->
+                <div id="introStep2" class="intro-step hidden">
+                    <p class="intro-text fade-in-up">...y terminan cambiándolo todo.</p>
+                </div>
+
+                <!-- Sequence Step 3: Brand Reveal -->
+                <div id="introStep3" class="intro-step hidden">
+                    <h1 class="brand-title luxury-title">NUESTRA CONSTANTE</h1>
+                    <p class="brand-tagline">"Nuestra única constante vital eres tú."</p>
+                    <button id="btnStartIntro" class="btn-luxury glow-btn">
+                        <span>COMENZAR</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+
+                <!-- Sequence Step 4: Transition Prompt -->
+                <div id="introStep4" class="intro-step hidden">
+                    <p class="intro-text-small">Antes de continuar...</p>
+                    <p class="intro-text-highlight">Hay algo que quiero preguntarte.</p>
+                </div>
+
+                <!-- Sequence Step 5: THE QUESTION -->
+                <div id="introStep5" class="intro-step hidden">
+                    <div class="proposal-card glass-panel">
+                        <span class="proposal-badge">Un nuevo comienzo</span>
+                        <h2 class="proposal-question">¿Quieres ser mi novia?</h2>
+                        
+                        <div class="proposal-actions">
+                            <button id="btnYes" class="btn-primary-luxury">
+                                <span>SÍ ❤️</span>
+                            </button>
+                            <button id="btnHearIt" class="btn-secondary-luxury">
+                                <span>Quiero escucharlo de ti</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sequence Step 6: THE YES CINEMATIC TRANSITION -->
+                <div id="introStep6" class="intro-step hidden">
+                    <div class="yes-celebration">
+                        <p class="celebration-subtitle fade-in">Entonces... comienza nuestra historia.</p>
+                        <h2 class="celebration-title luxury-title fade-in-delay">Bienvenida a NUESTRA CONSTANTE. ❤️</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Romantic Interaction Modal for "Quiero escucharlo de ti" -->
+            <div id="hearItModal" class="custom-modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-card glass-panel text-center">
+                    <div class="modal-icon">✨</div>
+                    <p class="modal-quote">"Entonces tendrás que decírmelo mirándome a los ojos."</p>
+                    <button id="btnCloseHearIt" class="btn-secondary-luxury">
+                        <span>Volver a ver la pregunta</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- 2. MAIN APPLICATION DASHBOARD (POST "SÍ")  -->
+        <!-- ========================================== -->
+        <main id="mainSection" class="main-layout hidden">
+
+            <!-- Top Header -->
+            <header class="app-header">
+                <div class="header-brand">
+                    <h1 class="header-title">NUESTRA CONSTANTE</h1>
+                    <p class="header-tagline">Nuestra única constante vital.</p>
+                </div>
+                <button id="btnOpenLetterTop" class="btn-icon-gold" title="Desde aquel momento...">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10c0-.63.3-1.22.8-1.6l8-6a2 2 0 0 1 2.4 0l8 6z"></path><path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"></path></svg>
+                </button>
+            </header>
+
+            <!-- TAB 1: INICIO (COUNTER DASHBOARD) -->
+            <section id="tabInicio" class="tab-content active">
+                
+                <!-- Main Luxury Clock Counter -->
+                <div class="clock-container glass-panel">
+                    <div class="clock-header">
+                        <span class="clock-live-indicator"><span class="pulse-dot"></span> EN TIEMPO REAL</span>
+                        <span class="clock-label">Llevamos juntos</span>
+                    </div>
+
+                    <div class="clock-primary-display">
+                        <div class="clock-days-wrapper">
+                            <span id="counterDays" class="clock-number-large">000</span>
+                            <span class="clock-unit-large">días</span>
+                        </div>
+                        
+                        <div class="clock-hms-wrapper">
+                            <div class="hms-item">
+                                <span id="counterHours" class="clock-number-medium">00</span>
+                                <span class="hms-label">horas</span>
+                            </div>
+                            <span class="hms-divider">·</span>
+                            <div class="hms-item">
+                                <span id="counterMinutes" class="clock-number-medium">00</span>
+                                <span class="hms-label">minutos</span>
+                            </div>
+                            <span class="hms-divider">·</span>
+                            <div class="hms-item">
+                                <span id="counterSeconds" class="clock-number-medium">00</span>
+                                <span class="hms-label">segundos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clock-divider"></div>
+
+                    <!-- Breakdown Counter Stats -->
+                    <div class="clock-breakdown-grid">
+                        <div class="breakdown-item">
+                            <span id="counterTotalHours" class="breakdown-value">0</span>
+                            <span class="breakdown-label">horas juntos</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span id="counterTotalMinutes" class="breakdown-value">0</span>
+                            <span class="breakdown-label">minutos</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span id="counterTotalSeconds" class="breakdown-value">0</span>
+                            <span class="breakdown-label">segundos</span>
+                        </div>
+                    </div>
+
+                    <div class="clock-footer">
+                        <p id="startDateStamp" class="start-date-text">Nuestra historia comenzó el --/--/---- a las --:--</p>
+                        <p class="clock-click-hint">✨ Toca los días, horas o segundos para ver su significado poético</p>
+                    </div>
+                </div>
+
+                <!-- Moon Phase Widget -->
+                <div class="moon-phase-card glass-panel">
+                    <span class="moon-icon-graphic">🌕</span>
+                    <div class="moon-phase-info">
+                        <h4 id="moonPhaseTitle" class="moon-phase-title">Luna Llena Dorada</h4>
+                        <span class="moon-phase-sub">La fase lunar exacta de la noche en que comenzó nuestro tiempo.</span>
+                    </div>
+                </div>
+
+                <!-- Digital Letter Entry Card -->
+                <div id="cardDigitalLetter" class="letter-entry-card glass-panel cursor-pointer">
+                    <div class="letter-card-glow"></div>
+                    <div class="letter-card-content">
+                        <span class="letter-badge">Carta digital</span>
+                        <h3 class="letter-card-title">"Desde aquel momento..."</h3>
+                        <p class="letter-card-snippet">No sé cuánto tiempo tendremos para escribir esta historia. Pero sí sé con quién quiero escribirla.</p>
+                        <span class="letter-read-more">Leer mensaje completo &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Quick Vitals Snapshot Widget -->
+                <div class="vitals-quick-card glass-panel cursor-pointer" onclick="switchTab('nosotros')">
+                    <div class="vitals-quick-header">
+                        <span class="vitals-tag">SIGNOS VITALES</span>
+                        <span class="vitals-status-badge">❤️ Estado: Enamorados</span>
+                    </div>
+                    <div class="vitals-ecg-mini">
+                        <canvas id="miniEcgCanvas" height="40"></canvas>
+                    </div>
+                    <div class="vitals-quick-footer">
+                        <span class="vitals-quote-mini">"Tratamiento recomendado: Una cita conmigo."</span>
+                    </div>
+                </div>
+
+                <!-- Reset / Prepare for Delivery Helper Widget -->
+                <div style="text-align: center; margin: 24px 0 60px 0;">
+                    <button type="button" class="btn-text-gold" onclick="window.App && window.App.confirmDeliveryReset()" style="font-size: 0.78rem; opacity: 0.8; text-decoration: underline; cursor: pointer;">
+                        🔄 Preparar y reiniciar aplicación para entregársela a ella ❤️
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- TAB 2: NUESTRA HISTORIA (INSTAGRAM-STYLE FEED) -->
+            <section id="tabHistoria" class="tab-content hidden">
+                <!-- Instagram Profile Header -->
+                <div class="insta-profile-card glass-panel">
+                    <div class="insta-avatar-ring">
+                        <div class="insta-avatar">NC</div>
+                    </div>
+                    <div class="insta-profile-info">
+                        <div class="insta-username-row">
+                            <h3 class="insta-username">nuestraconstante</h3>
+                            <span class="insta-badge-check" title="Relación Verificada">✓</span>
+                        </div>
+                        <p class="insta-bio">Nuestra única constante vital. 🖤✨</p>
+                        <div class="insta-stats-row">
+                            <div class="insta-stat">
+                                <span id="instaStatDays" class="stat-num">0</span>
+                                <span class="stat-lbl">días</span>
+                            </div>
+                            <div class="insta-stat">
+                                <span id="instaStatPosts" class="stat-num">0</span>
+                                <span class="stat-lbl">publicaciones</span>
+                            </div>
+                            <div class="insta-stat">
+                                <span class="stat-num">❤️</span>
+                                <span class="stat-lbl">enamorados</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category / Section Filter Bar -->
+                <div class="story-category-bar" style="margin: 16px 0 12px 0; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;">
+                    <div id="storyCategoryPills" style="display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;">
+                        <!-- Rendered dynamically by timeline.js -->
+                    </div>
+                </div>
+
+                <div class="timeline-controls" style="display: flex; justify-content: space-between; align-items: center; margin: 12px 0 16px 0;">
+                    <span class="feed-section-title">PUBLICACIONES DE NUESTRA HISTORIA</span>
+                    <button id="btnAddTimelineEvent" class="btn-secondary-luxury btn-sm">
+                        <span>+ Publicar momento</span>
+                    </button>
+                </div>
+
+                <div class="timeline-container">
+                    <div id="timelineEventsList" class="insta-feed-grid">
+                        <!-- Rendered by timeline.js as Instagram-style posts -->
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- TAB 3: NUESTRA MÚSICA (DEDICATED SONGS FEED) -->
+            <section id="tabMusica" class="tab-content hidden">
+                <div class="section-header">
+                    <h2 class="section-title luxury-title">Nuestra música</h2>
+                    <p class="section-subtitle">"La banda sonora de nuestra historia."</p>
+                </div>
+
+                <div class="timeline-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <span class="feed-section-title">🎵 CANCIONES DEDICADAS (<span id="musicStatCount">0</span>)</span>
+                    <button id="btnAddMusicDedication" class="btn-secondary-luxury btn-sm">
+                        <span>+ Dedicar canción 🎵</span>
+                    </button>
+                </div>
+
+                <div id="musicFeedList" class="music-feed-grid">
+                    <!-- Rendered by music.js -->
+                </div>
+            </section>
+
+
+            <!-- TAB 4: NUESTRA PINTURA (INTERACTIVE CANVAS) -->
+            <section id="tabPintura" class="tab-content hidden">
+                <div class="section-header text-center">
+                    <h2 class="section-title luxury-title">Nuestra pintura</h2>
+                    <p class="section-subtitle">"Algunas historias se escriben.<br>La nuestra también puede pintarse."</p>
+                    <span class="canvas-stage-tag" id="canvasStageTag">Nuestra primera pincelada</span>
+                </div>
+
+                <!-- Romantic & Vital Canvas Explanation Banner -->
+                <div class="canvas-explanation-box glass-panel" style="margin-bottom: 20px; padding: 18px 20px; border-color: var(--border-gold-glow); background: rgba(230, 200, 117, 0.05);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600; color: var(--accent-gold); display: flex; align-items: center; gap: 8px;">
+                            🌌 El Mapa Estelar Vivo & Lienzo de Latidos
+                        </span>
+                        <button type="button" class="btn-text-gold" onclick="window.Painting && window.Painting.showCanvasInfoModal()" style="font-size: 0.8rem; text-decoration: underline; font-weight: 600;">¿Qué significa? ℹ️</button>
+                    </div>
+                    <p id="canvasExplanationText" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin: 0;">
+                        Este lienzo no es un dibujo cualquiera: la base es el <strong>Mapa Estelar del Cielo</strong> del día en que comenzó nuestro tiempo. Evoluciona con cada etapa alcanzada (luna, latido central y corona), permite trazar tu <strong>pulso cardíaco real 💓</strong> y pintar con <strong>estelas de polvo de oro ✨</strong>.
+                    </p>
+                </div>
+
+                <!-- Segmented Canvas Mode Selector -->
+                <div class="canvas-mode-bar" style="display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <div style="display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--radius-full); background: rgba(18, 16, 25, 0.85); border: 1px solid var(--border-gold-subtle); backdrop-filter: blur(10px);">
+                        <button type="button" id="btnModeConstellation" class="mode-switch-btn active" onclick="window.Painting && window.Painting.switchCanvasMode('constellation')" style="padding: 8px 18px; border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; background: rgba(230, 200, 117, 0.2); color: var(--accent-gold); transition: all 0.25s ease;">
+                            🌌 Constelación Estelar
+                        </button>
+                        <button type="button" id="btnModeBlank" class="mode-switch-btn" onclick="window.Painting && window.Painting.switchCanvasMode('blank')" style="padding: 8px 18px; border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-secondary); transition: all 0.25s ease;">
+                            🎨 Lienzo en Blanco para Dibujar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="painting-workspace glass-panel">
+                    <div class="canvas-wrapper">
+                        <canvas id="paintCanvas"></canvas>
+                        <canvas id="particleCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></canvas>
+                    </div>
+
+                    <!-- Canvas Palette Tools -->
+                    <div class="canvas-toolbar">
+                        <div class="color-picker-group">
+                            <button class="color-btn active" data-color="#e6c875" style="background-color: #e6c875;" title="Champagne Gold"></button>
+                            <button class="color-btn" data-color="#c94a5e" style="background-color: #c94a5e;" title="Velvet Rose"></button>
+                            <button class="color-btn" data-color="#ffffff" style="background-color: #ffffff;" title="Warm White"></button>
+                            <button class="color-btn" data-color="#4a90e2" style="background-color: #4a90e2;" title="Sapphire"></button>
+                            <button class="color-btn" data-color="#2a2a35" style="background-color: #2a2a35;" title="Graphite"></button>
+                            <div class="custom-color-picker-wrapper" style="position: relative; display: inline-flex; align-items: center;">
+                                <button class="color-btn custom-picker-btn" id="btnCustomColor" data-color="#ff79c6" style="background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); border: 1.5px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; font-size: 0.75rem;" title="Elegir Color Personalizado 🎨">
+                                    🎨
+                                </button>
+                                <input type="color" id="inputCustomColor" value="#ff79c6" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;" title="Elegir Tono Exacto 🎨">
+                            </div>
+                            <button class="color-btn eraser-btn" data-color="eraser" title="Borrador">🧹</button>
+                        </div>
+
+                        <div class="brush-size-group" style="display: flex; align-items: center; gap: 8px;">
+                            <span class="brush-label" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Grosor: <strong id="brushSizeVal" style="color: var(--accent-gold);">2px</strong></span>
+                            <input type="range" id="brushSize" min="0.5" max="30" value="2" step="0.5" style="cursor: pointer; width: 90px;">
+                        </div>
+
+                        <div class="canvas-action-btns">
+                            <button id="btnHeartArt" class="btn-heart-art" onclick="window.Painting && window.Painting.generateHeartbeatArt()">💓 Arte por Latidos</button>
+                            <button id="btnClearCanvas" class="btn-secondary-luxury btn-sm" style="border-color: rgba(201, 74, 94, 0.4); color: var(--accent-rose);">
+                                <span>🧹 Limpiar</span>
+                            </button>
+                            <button id="btnSaveCanvas" class="btn-primary-luxury btn-sm">Guardar obra</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="painting-roadmap glass-panel">
+                    <h4 class="roadmap-title">Evolución de nuestra pintura</h4>
+                    <div class="roadmap-steps">
+                        <div class="roadmap-step current" id="stepRoadmap0">
+                            <span class="step-icon">🎨</span>
+                            <span class="step-label">Lienzo inicial</span>
+                        </div>
+                        <div class="roadmap-step" id="stepRoadmap1">
+                            <span class="step-icon">🌱</span>
+                            <span class="step-label">1 Mes</span>
+                        </div>
+                        <div class="roadmap-step" id="stepRoadmap3">
+                            <span class="step-icon">💫</span>
+                            <span class="step-label">3 Meses</span>
+                        </div>
+                        <div class="roadmap-step" id="stepRoadmap6">
+                            <span class="step-icon">✨</span>
+                            <span class="step-label">6 Meses</span>
+                        </div>
+                        <div class="roadmap-step" id="stepRoadmap12">
+                            <span class="step-icon">👑</span>
+                            <span class="step-label">1 Año</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Museum Gallery for Saved Paintings -->
+                <div class="museum-gallery-box glass-panel" style="padding-bottom: 40px; margin-bottom: 90px;">
+                    <h4 class="roadmap-title">🖼️ Galería Privada del Museo</h4>
+                    <p class="section-subtitle" style="font-size: 0.82rem;">Cuadros guardados en nuestra exposición privada.</p>
+                    <div id="museumGrid" class="museum-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-top: 14px;">
+                        <!-- Rendered by painting.js -->
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- TAB 5: NOSOTROS (SIGNOS VITALES & ENTRENAMIENTO) -->
+            <section id="tabNosotros" class="tab-content hidden">
+                <div class="section-header">
+                    <h2 class="section-title luxury-title">Nosotros</h2>
+                    <p class="section-subtitle">Dos mundos que entrenan y laten juntos.</p>
+                </div>
+
+                <!-- Doctor Medical Vitals Section -->
+                <div class="vitals-container glass-panel">
+                    <div class="vitals-header">
+                        <div class="vitals-title-group">
+                            <span class="vitals-icon">🩺</span>
+                            <h3 class="vitals-title">Signos Vitales</h3>
+                        </div>
+                        <span class="vitals-pulse-badge">Monitor activo</span>
+                    </div>
+
+                    <!-- ECG Monitor Screen -->
+                    <div class="ecg-monitor-box">
+                        <canvas id="mainEcgCanvas" height="80"></canvas>
+                        <div class="ecg-overlay-grid"></div>
+                    </div>
+
+                    <div class="vitals-metrics-grid">
+                        <div class="vital-metric">
+                            <span class="metric-key">Estado:</span>
+                            <span class="metric-val highlight-red">Enamorados ❤️</span>
+                        </div>
+                        <div class="vital-metric">
+                            <span class="metric-key">Ritmo:</span>
+                            <span class="metric-val">Juntos (Sincrónico)</span>
+                        </div>
+                        <div class="vital-metric">
+                            <span class="metric-key">Diagnóstico:</span>
+                            <span class="metric-val">Irremediablemente nosotros</span>
+                        </div>
+                        <div class="vital-metric">
+                            <span class="metric-key">Pronóstico:</span>
+                            <span class="metric-val gold-text">Largo plazo</span>
+                        </div>
+                    </div>
+
+                    <div class="vitals-prescription cursor-pointer" onclick="openRxQuote()" title="Toca para obtener otra receta médica romántica">
+                        <span class="rx-symbol">Rx</span>
+                        <div class="rx-body">
+                            <span class="rx-title">Tratamiento recomendado: (Toca para cambiar ✨)</span>
+                            <p id="rxQuoteText" class="rx-quote">"Una cita conmigo. Repetir indefinidamente. ☕❤️"</p>
+                        </div>
+                    </div>
+
+                    <!-- Medical Emergency Kit -->
+                    <div class="medical-kit-box">
+                        <h4 class="kit-title">🩺 Botiquín de Emergencia para la Doctora</h4>
+                        <div class="kit-pills-grid">
+                            <div class="pill-item" data-pill="abratilina" onclick="openPill('abratilina')">
+                                <span class="pill-icon">💊</span>
+                                <span class="pill-name">Abratilina</span>
+                            </div>
+                            <div class="pill-item" data-pill="orgullo" onclick="openPill('orgullo')">
+                                <span class="pill-icon">💉</span>
+                                <span class="pill-name">Orgullo</span>
+                            </div>
+                            <div class="pill-item" data-pill="risa" onclick="openPill('risa')">
+                                <span class="pill-icon">🧪</span>
+                                <span class="pill-name">Risa pura</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnTouchHeartSensor" class="vitals-heart-sensor" style="position: relative; overflow: hidden;">
+                        <div id="sensorChargeProgress" class="sensor-charge-progress"></div>
+                        <span class="sensor-heart-icon" style="position: relative; z-index: 2;">❤️</span>
+                        <span id="sensorLabelText" style="position: relative; z-index: 2;">MANTÉN PRESIONADO PARA MEDIR PULSO</span>
+                    </button>
+                    <div id="sensorFeedback" class="sensor-feedback-box hidden"></div>
+                </div>
+
+
+                <!-- Gym / Taekwondo Training Achievements Section -->
+                <div class="training-container glass-panel">
+                    <div class="training-header">
+                        <div class="training-title-group">
+                            <span class="training-icon">🥋</span>
+                            <h3 class="training-title">Nuestro Entrenamiento</h3>
+                        </div>
+                        <span class="training-badge">Dojang & Gym</span>
+                    </div>
+
+                    <!-- Taekwondo Belt Progression Bar -->
+                    <div class="belt-progress-box">
+                        <div class="belt-header">
+                            <span class="belt-title">Progresión de Cinto</span>
+                            <span id="beltCurrentBadge" class="belt-current-badge">⚪ Cinto Blanco</span>
+                        </div>
+                        <div class="belt-bar-track">
+                            <div class="belt-segment belt-white active" id="beltSeg0"></div>
+                            <div class="belt-segment belt-yellow" id="beltSeg1"></div>
+                            <div class="belt-segment belt-green" id="beltSeg2"></div>
+                            <div class="belt-segment belt-blue" id="beltSeg3"></div>
+                            <div class="belt-segment belt-red" id="beltSeg4"></div>
+                            <div class="belt-segment belt-black" id="beltSeg5"></div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+                        <p class="training-quote" style="margin:0;">"Crecer juntos también cuenta como entrenamiento."</p>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button type="button" id="btnOpenCreateAchievement" class="btn-primary-luxury btn-sm" onclick="window.openCreateAchievementModal ? window.openCreateAchievementModal() : (window.Training && window.Training.openCreateAchievementModal())" style="padding:6px 14px; font-size:0.75rem;">
+                                <span>🎯 + Crear Nuevo Reto</span>
+                            </button>
+                            <button type="button" id="btnResetAchievements" class="btn-primary-luxury btn-sm" onclick="window.resetAllAchievements ? window.resetAllAchievements() : (window.Training && window.Training.resetAllToLocked())" style="padding:6px 14px; font-size:0.75rem; background:rgba(255,255,255,0.08);">
+                                <span>🔄 Bloquear medallas para prueba</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="achievementsList" class="achievements-grid">
+                        <!-- Rendered by training.js -->
+                    </div>
+                </div>
+
+                <!-- Secret Time Capsules Section -->
+                <div class="capsules-container glass-panel">
+                    <div class="training-header">
+                        <div class="training-title-group">
+                            <span class="training-icon">🔒</span>
+                            <h3 class="training-title">Cápsulas del Tiempo</h3>
+                        </div>
+                        <span class="training-badge">Mensajes Secretos</span>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+                        <p class="training-quote" style="margin:0;">"Secreto guardado para nuestro futuro."</p>
+                        <button type="button" id="btnOpenCreateCapsule" class="btn-primary-luxury btn-sm" onclick="window.openCreateCapsuleModal ? window.openCreateCapsuleModal() : (window.Capsule && window.Capsule.openCreateModal())" style="padding:6px 14px; font-size:0.75rem;">
+                            <span>✍️ + Escribir Cápsula Secreta</span>
+                        </button>
+                    </div>
+
+                    <div id="capsulesGrid" class="capsules-grid">
+                        <!-- Rendered by capsule.js -->
+                    </div>
+                </div>
+
+                <!-- Footer options -->
+                <div class="nosotros-footer-actions text-center" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <button id="btnOpenLetterFooter" class="btn-secondary-luxury btn-sm">
+                        <span>✉️ Leer carta digital</span>
+                    </button>
+                    <button id="btnResetIntro" class="btn-text-gold" style="font-size: 0.75rem; opacity: 0.7;">
+                        <span>🔄 Ver propuesta de nuevo</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+
+        <!-- ========================================== -->
+        <!-- 3. FIXED MOBILE BOTTOM NAVIGATION BAR      -->
+        <!-- ========================================== -->
+        <nav id="bottomNav" class="bottom-nav hidden">
+            <button class="nav-item active" data-tab="inicio">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Inicio</span>
+            </button>
+
+            <button class="nav-item" data-tab="historia">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>Historia</span>
+            </button>
+
+            <button class="nav-item" data-tab="musica">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                <span>Música</span>
+            </button>
+
+            <button class="nav-item" data-tab="pintura">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                <span>Pintura</span>
+            </button>
+
+            <button class="nav-item" data-tab="nosotros">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span>Nosotros</span>
+            </button>
+        </nav>
+
+
+        <!-- ========================================== -->
+        <!-- 4. MODALS (LETTER, TIMELINE, MEMORIES)    -->
+        <!-- ========================================== -->
+        
+        <!-- Digital Letter Full Modal -->
+        <div id="letterModal" class="custom-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card letter-modal-card glass-panel">
+                <button id="btnCloseLetter" class="modal-close-btn">&times;</button>
+                <div class="letter-content-body">
+                    <span class="letter-modal-tag">Desde aquel momento...</span>
+                    
+                    <div id="waxSealWrapper" class="wax-seal-wrapper">
+                        <button id="btnPressWaxSeal" class="wax-seal-button">
+                            <span>NC</span>
+                        </button>
+                        <span class="wax-seal-hint">Toca el sello de cera para abrir</span>
+                    </div>
+
+                    <div id="letterParagraphsBox" class="letter-paragraphs hidden">
+                        <p class="letter-p line-1">"No sé cuánto tiempo tendremos para escribir esta historia."</p>
+                        <p class="letter-p line-2">"Pero sí sé con quién quiero escribirla."</p>
+                    </div>
+                    <div class="letter-signoff">
+                        <h2 class="letter-brand luxury-title">NUESTRA CONSTANTE</h2>
+                        <span class="letter-date-stamp" id="letterDateStamp">Nuestra única constante vital.</span>
+                    </div>
+                    <button id="btnWriteCustomLetter" class="btn-text-gold" style="font-size: 0.75rem; margin-top: 15px;">✍️ Escribir un mensaje personalizado</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Timeline Event / Album Modal -->
+        <div id="timelineModal" class="custom-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card glass-panel" style="max-width: 480px;">
+                <button id="btnCloseTimelineModal" class="modal-close-btn">&times;</button>
+                <h3 class="modal-title luxury-title">Publicar Momento o Álbum 📸</h3>
+                <form id="formAddTimelineEvent" class="modal-form">
+                    <div class="form-group">
+                        <label for="eventTitle">Título de la historia / álbum</label>
+                        <input type="text" id="eventTitle" placeholder="Ej. Viaje a la playa, Entrenamiento de Taekwondo..." required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label for="eventDate">Fecha</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventCategorySelect">Sección / Álbum 🏷️</label>
+                            <select id="eventCategorySelect" style="width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(18, 16, 25, 0.9); color: var(--text-primary); border: 1px solid var(--border-gold-subtle); font-size: 0.85rem; cursor: pointer;">
+                                <!-- Populated dynamically by timeline.js -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Custom Category Input (Hidden by default until "+ Nueva Sección" selected) -->
+                    <div class="form-group hidden" id="customCategoryInputGroup">
+                        <label for="eventCategoryCustom">Nombre de la nueva sección 🏷️</label>
+                        <input type="text" id="eventCategoryCustom" placeholder="Ej. 🎬 Cine, 🏔️ Aventura, 🍕 Cenas...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Descripción / Recuerdo</label>
+                        <textarea id="eventDescription" rows="3" placeholder="Escribe algo especial sobre este momento o álbum..."></textarea>
+                    </div>
+
+                    <!-- Multiple Photo Upload Group -->
+                    <div class="form-group">
+                        <label for="eventPhotos">Fotografías del álbum 📸 (puedes elegir más de una foto)</label>
+                        <input type="file" id="eventPhotos" accept="image/*" multiple style="cursor: pointer;">
+                        <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; display: block;">💡 Tip: Puedes seleccionar varias imágenes juntas para crear un álbum fotográfico completo.</small>
+                        
+                        <!-- Multi-Photo Thumbnails Preview Grid -->
+                        <div id="eventPhotosPreviewGrid" class="hidden" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 12px; max-height: 180px; overflow-y: auto; padding: 6px; background: rgba(0,0,0,0.4); border-radius: var(--radius-sm); border: 1px solid var(--border-gold-subtle);">
+                            <!-- Thumbnails rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <label style="display:flex; align-items:center; gap:8px; margin-bottom:16px; cursor:pointer;">
+                        <input type="checkbox" id="eventIsPinned">
+                        <span style="font-size:0.85rem; color:var(--accent-gold); font-weight:600;">📌 Fijar esta historia arriba en el perfil</span>
+                    </label>
+                    <button type="submit" class="btn-primary-luxury full-width">Publicar en nuestra historia ❤️</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Custom Capsule Modal -->
+        <div id="createCapsuleModal" class="custom-modal hidden">
+            <div class="modal-backdrop" onclick="window.Capsule && window.Capsule.closeCreateModal()"></div>
+            <div class="modal-card glass-panel" style="max-width: 440px;">
+                <button type="button" class="modal-close-btn" onclick="window.Capsule && window.Capsule.closeCreateModal()">&times;</button>
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span style="font-size:3.2rem; display:block; margin-bottom:8px;">⌛</span>
+                    <h3 class="modal-title luxury-title" style="margin-bottom:4px;">Cápsula Secreta al Futuro</h3>
+                    <p style="font-size:0.88rem; color:var(--text-secondary);">Escribe un mensaje secreto y elige en qué fecha del futuro se abrirá. ❤️</p>
+                </div>
+
+                <form class="modal-form" onsubmit="window.Capsule && window.Capsule.handleCreate(event)">
+                    <div class="form-group">
+                        <label for="newCapTitle">Título de la Cápsula</label>
+                        <input type="text" id="newCapTitle" placeholder="Ej. Comprar Nuestra Casa, Primer Viaje..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Modo de Activación</label>
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px; background:rgba(0,0,0,0.25); padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-white-subtle);">
+                            <label style="font-size:0.85rem; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                <input type="radio" name="capMode" value="date" checked onchange="window.Capsule && window.Capsule.toggleModeUI('date')">
+                                <span>📅 Fecha Fija en Calendario</span>
+                            </label>
+                            <label style="font-size:0.85rem; color:var(--text-primary); cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                <input type="radio" name="capMode" value="milestone" onchange="window.Capsule && window.Capsule.toggleModeUI('milestone')">
+                                <span>🎯 Meta por Cumplir (Se activa al lograrla)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="capDateGroup">
+                        <label for="newCapDate">Fecha de Apertura Secreta</label>
+                        <input type="date" id="newCapDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="newCapMessage">Mensaje Secreto para el Futuro</label>
+                        <textarea id="newCapMessage" rows="3" placeholder="Escribe lo que sientes hoy para revelar cuando se cumpla este gran momento..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-luxury full-width" style="margin-top:10px;">
+                        <span>🔒 Sellar Cápsula del Tiempo</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Custom Achievement Modal -->
+        <div id="createAchievementModal" class="custom-modal hidden">
+            <div class="modal-backdrop" onclick="window.Training && window.Training.closeCreateAchievementModal()"></div>
+            <div class="modal-card glass-panel" style="max-width: 440px;">
+                <button type="button" class="modal-close-btn" onclick="window.Training && window.Training.closeCreateAchievementModal()">&times;</button>
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span style="font-size:3.2rem; display:block; margin-bottom:8px;">🎯</span>
+                    <h3 class="modal-title luxury-title" style="margin-bottom:4px;">Proponer Nuevo Reto</h3>
+                    <p style="font-size:0.88rem; color:var(--text-secondary);">Agrega un nuevo logro o meta juntos para su dojang de amor. ❤️</p>
+                </div>
+
+                <form class="modal-form" onsubmit="window.Training && window.Training.handleCreateAchievement(event)">
+                    <div class="form-group">
+                        <label for="newAchIcon">Icono Emoji (opcional)</label>
+                        <input type="text" id="newAchIcon" placeholder="Ej: 🍕, 🏔️, 🥋, 🎟️, 🍿..." maxlength="4" value="🎯">
+                    </div>
+                    <div class="form-group">
+                        <label for="newAchTitle">Nombre del Reto / Logro</label>
+                        <input type="text" id="newAchTitle" placeholder="Ej. Noche de pizza casera juntos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newAchDesc">Descripción o meta a cumplir</label>
+                        <textarea id="newAchDesc" rows="2" placeholder="Ej. Preparar la cena desde cero juntos y ver películas acurrucados..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-luxury full-width" style="margin-top:10px;">
+                        <span>🎯 Agregar Reto a Nuestro Entrenamiento</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Unlock / Fulfill Capsule with Photo Modal -->
+        <div id="unlockCapsulePhotoModal" class="custom-modal hidden">
+            <div class="modal-backdrop" onclick="window.Capsule && window.Capsule.closePhotoModal()"></div>
+            <div class="modal-card glass-panel" style="max-width: 440px;">
+                <button type="button" class="modal-close-btn" onclick="window.Capsule && window.Capsule.closePhotoModal()">&times;</button>
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span id="capPhotoModalIcon" style="font-size:3.2rem; display:block; margin-bottom:8px;">⌛</span>
+                    <h3 id="capPhotoModalTitle" class="modal-title luxury-title" style="margin-bottom:4px;">Publicar Cápsula</h3>
+                    <p id="capPhotoModalDesc" style="font-size:0.88rem; color:var(--text-secondary);">Agrega una foto especial para publicar este momento en nuestra historia. ❤️</p>
+                </div>
+
+                <form id="capPhotoModalForm" class="modal-form" onsubmit="window.Capsule && window.Capsule.confirmPublishWithPhoto(event)">
+                    <input type="hidden" id="capPhotoModalId">
+                    <div class="form-group">
+                        <label for="capPhotoModalInput">Fotografía del momento 📸 (opcional)</label>
+                        <input type="file" id="capPhotoModalInput" accept="image/*" onchange="window.Capsule && window.Capsule.handlePhotoPreview(event)">
+                        <div id="capPhotoPreviewBox" class="photo-preview-box hidden" style="margin-top: 10px; position: relative; width: 100%; background: #080a0f; border-radius: var(--radius-sm); border: 1px solid var(--border-gold-subtle); display: flex; align-items: center; justify-content: center; padding: 6px 0; overflow: hidden;">
+                            <img id="capPhotoPreviewImg" src="" alt="Previsualización" style="width: 100%; max-height: 240px; object-fit: contain; display: block;">
+                            <button type="button" onclick="window.Capsule && window.Capsule.removePhotoPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 5;">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="capPhotoNote">Mensaje / Dedicatoria para Nuestra Historia ✍️</label>
+                        <textarea id="capPhotoNote" rows="3" placeholder="Escribe algo especial sobre este momento inolvidable..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-luxury full-width">
+                        <span>📸 Publicar en Nuestra Historia ❤️</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Unlock Achievement with Photo Modal -->
+        <div id="unlockAchievementModal" class="custom-modal hidden">
+            <div class="modal-backdrop" onclick="window.Training && window.Training.closeUnlockModal()"></div>
+            <div class="modal-card glass-panel" style="max-width: 440px;">
+                <button type="button" class="modal-close-btn" onclick="window.Training && window.Training.closeUnlockModal()">&times;</button>
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span id="achModalIcon" style="font-size:3.2rem; display:block; margin-bottom:8px;">🏆</span>
+                    <h3 id="achModalTitle" class="modal-title luxury-title" style="margin-bottom:4px;">Desbloquear Medalla</h3>
+                    <p id="achModalDesc" style="font-size:0.88rem; color:var(--text-secondary);">¿Quieres marcar este logro como cumplido juntos? ❤️</p>
+                </div>
+
+                <form id="achModalForm" class="modal-form" onsubmit="window.Training && window.Training.confirmUnlock(event)">
+                    <input type="hidden" id="achModalId">
+                    <div class="form-group">
+                        <label for="achModalPhotoInput">Foto del Recuerdo 📸 (opcional)</label>
+                        <input type="file" id="achModalPhotoInput" accept="image/*" onchange="window.Training && window.Training.handlePhotoPreview(event)">
+                        <div id="achModalPhotoPreviewBox" class="photo-preview-box hidden" style="margin-top: 10px; position: relative; width: 100%; background: #080a0f; border-radius: var(--radius-sm); border: 1px solid var(--border-gold-subtle); display: flex; align-items: center; justify-content: center; padding: 6px 0; overflow: hidden;">
+                            <img id="achModalPhotoPreviewImg" src="" alt="Previsualización" style="width: 100%; max-height: 240px; object-fit: contain; display: block;">
+                            <button type="button" onclick="window.Training && window.Training.removePhotoPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 5;">&times;</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="achModalNote">Mensaje especial para Nuestra Historia ✍️</label>
+                        <textarea id="achModalNote" rows="2" placeholder="Escribe un lindo recuerdo sobre esta medalla..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-luxury full-width">
+                        <span>🏆 ¡Desbloquear y Publicar en Historia!</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Music Dedication Modal -->
+        <div id="musicModal" class="custom-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card glass-panel">
+                <button id="btnCloseMusicModal" class="modal-close-btn">&times;</button>
+                <h3 class="modal-title luxury-title">Dedicar una canción 🎵</h3>
+                <form id="formAddMusicDedication" class="modal-form">
+                    <div class="form-group">
+                        <label for="songTitle">Nombre de la canción</label>
+                        <input type="text" id="songTitle" placeholder="Ej. Perfect, Yellow..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="songArtist">Artista / Banda</label>
+                        <input type="text" id="songArtist" placeholder="Ej. Ed Sheeran, Coldplay..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="songMessage">Dedicatoria / ¿Por qué esta canción?</label>
+                        <textarea id="songMessage" rows="3" placeholder="Escribe por qué esta canción es especial para ustedes..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="songUrl">Enlace directo de Spotify o YouTube (opcional)</label>
+                        <input type="url" id="songUrl" placeholder="https://open.spotify.com/track/...">
+                        <small style="color:var(--text-muted); font-size:0.75rem; margin-top:4px; display:block;">💡 Tip: En Spotify toca <strong>Compartir ➔ Copiar enlace</strong> para reproducirla directo en vivo.</small>
+                    </div>
+                    <button type="submit" class="btn-primary-luxury full-width">Dedicar esta canción ❤️</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Photo & Album Lightbox Carousel Modal -->
+        <div id="lightboxModal" class="custom-modal hidden">
+            <div class="modal-backdrop" onclick="window.Timeline && window.Timeline.closeLightbox()"></div>
+            <div class="lightbox-content glass-panel" style="position: relative; max-width: 640px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 20px; border: 1px solid var(--border-gold-glow);">
+                <button type="button" onclick="window.Timeline && window.Timeline.closeLightbox()" class="lightbox-close-btn">&times;</button>
+                
+                <!-- Main Enlarged Image Box with Nav Arrows -->
+                <div style="position: relative; width: 100%; aspect-ratio: 4/3; background: #0a0a0f; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
+                    <img id="lightboxImg" src="" alt="Recuerdo" style="width: 100%; height: 100%; object-fit: contain; display: block;">
+                    
+                    <!-- Prev / Next Carousel Controls -->
+                    <button type="button" id="lightboxBtnPrev" onclick="window.Timeline && window.Timeline.lightboxPrevPhoto()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.75); color: var(--accent-gold); border: 1px solid var(--border-gold-subtle); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 10;">◀</button>
+                    <button type="button" id="lightboxBtnNext" onclick="window.Timeline && window.Timeline.lightboxNextPhoto()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.75); color: var(--accent-gold); border: 1px solid var(--border-gold-subtle); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 10;">▶</button>
+                    
+                    <!-- Photo Index Counter Badge -->
+                    <div id="lightboxPhotoCounter" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: var(--accent-gold); font-size: 0.78rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; border: 1px solid var(--border-gold-subtle);">
+                        1 / 1
+                    </div>
+                </div>
+
+                <!-- Thumbnail Navigation Strip -->
+                <div id="lightboxThumbnails" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none;">
+                    <!-- Thumbnails rendered dynamically -->
+                </div>
+
+                <!-- Lightbox Caption Header -->
+                <div class="lightbox-caption">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                        <h3 id="lightboxTitle" class="lightbox-title" style="margin: 0; color: var(--accent-gold); font-size: 1.15rem;"></h3>
+                        <span id="lightboxCategoryTag" style="font-size: 0.75rem; background: rgba(230, 200, 117, 0.2); color: var(--accent-gold); padding: 3px 10px; border-radius: 12px; font-weight: 600;"></span>
+                    </div>
+                    <span id="lightboxDate" class="lightbox-date" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 8px;"></span>
+                    <p id="lightboxDesc" class="lightbox-desc" style="font-size: 0.88rem; color: var(--text-primary); line-height: 1.5; margin: 0;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Universal Premium Luxury Dialog Modal -->
+        <div id="premiumNoticeModal" class="custom-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card glass-panel text-center" style="border-color: var(--border-gold-glow); padding: 32px 24px;">
+                <button id="btnCloseNoticeModal" class="modal-close-btn">&times;</button>
+                <div id="noticeIcon" class="modal-icon" style="font-size: 2.5rem; margin-bottom: 12px;">✨</div>
+                <h3 id="noticeTitle" class="modal-title luxury-title" style="font-size: 1.5rem; margin-bottom: 10px;">Nuestra Constante</h3>
+                <p id="noticeMessage" class="modal-quote" style="font-size: 1.1rem; margin: 10px 0 24px 0; color: var(--text-primary); font-style: normal; line-height: 1.6;"></p>
+                <div id="noticeActionGroup" class="proposal-actions">
+                    <button id="btnConfirmNotice" class="btn-primary-luxury">
+                        <span>Aceptar ❤️</span>
+                    </button>
+                    <button id="btnCancelNotice" class="btn-secondary-luxury hidden">
+                        <span>Cancelar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Universal Premium Luxury Input Prompt Modal -->
+        <div id="premiumPromptModal" class="custom-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card glass-panel" style="border-color: var(--border-gold-glow); padding: 32px 24px; max-width: 420px; width: 90%;">
+                <button id="btnClosePromptModal" class="modal-close-btn">&times;</button>
+                <div id="promptIcon" class="modal-icon text-center" style="font-size: 2.2rem; margin-bottom: 8px;">✍️</div>
+                <h3 id="promptTitle" class="modal-title luxury-title text-center" style="font-size: 1.4rem; margin-bottom: 6px;">Escribir mensaje</h3>
+                <p id="promptSub" class="modal-quote text-center" style="font-size: 0.85rem; margin-bottom: 20px; color: var(--text-secondary);">Redacta un mensaje especial para ella</p>
+                
+                <form id="formLuxuryPrompt" class="modal-form" style="display: flex; flex-direction: column; gap: 14px;">
+                    <div class="form-group">
+                        <label for="promptInputTitle" class="form-label">Título del mensaje</label>
+                        <input type="text" id="promptInputTitle" class="form-input" placeholder="Ej. Mi constante favorita..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="promptInputText" class="form-label">Mensaje romántico</label>
+                        <textarea id="promptInputText" class="form-textarea" rows="3" placeholder="Escribe lo que sientes por ella hoy..." required></textarea>
+                    </div>
+                    <div class="proposal-actions" style="margin-top: 10px;">
+                        <button type="submit" id="btnSubmitPrompt" class="btn-primary-luxury">
+                            <span>Guardar mensaje ❤️</span>
+                        </button>
+                        <button type="button" id="btnCancelPrompt" class="btn-secondary-luxury">
+                            <span>Cancelar</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application JavaScript Modules with Anti-Cache Version Protection -->
+    <script src="js/config.js?v=2026.08.15.43"></script>
+    <script src="js/storage.js?v=2026.08.15.43"></script>
+    <script src="js/intro.js?v=2026.08.15.43"></script>
+    <script src="js/counter.js?v=2026.08.15.43"></script>
+    <script src="js/timeline.js?v=2026.08.15.43"></script>
+    <script src="js/painting.js?v=2026.08.15.43"></script>
+    <script src="js/vitals.js?v=2026.08.15.43"></script>
+    <script src="js/training.js?v=2026.08.15.43"></script>
+    <script src="js/music.js?v=2026.08.15.43"></script>
+    <script src="js/letter.js?v=2026.08.15.43"></script>
+    <script src="js/capsule.js?v=2026.08.15.43"></script>
+    <script src="js/app.js?v=2026.08.15.43"></script>
+</body>
+</html>
