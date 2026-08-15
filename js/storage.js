@@ -43,6 +43,12 @@ const Storage = {
                     await this.syncFromCloud();
                     const isStartedNow = !!this.getStartDate();
 
+                    // If YES proposal was accepted remotely on Device A, reload Device B immediately into Main App
+                    if (!wasStartedBefore && isStartedNow) {
+                        window.location.reload();
+                        return;
+                    }
+
                     // If reset was triggered remotely on another device, reload immediately to proposal screen
                     if (wasStartedBefore && !isStartedNow) {
                         window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();

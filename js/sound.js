@@ -19,13 +19,30 @@ const Sound = {
     },
 
     init() {
-        // Unlock Web Audio API on first user touch/click interaction
+        // Unlock Web Audio API on mobile (iOS Safari / Android Chrome) on first touch
         const unlock = () => {
-            this.getAudioContext();
+            const ctx = this.getAudioContext();
+            if (ctx && ctx.state === 'suspended') {
+                ctx.resume().then(() => {
+                    // Play inaudible silent micro-tone to wake mobile speaker hardware
+                    try {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        gain.gain.value = 0.0001;
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(0);
+                        osc.stop(ctx.currentTime + 0.001);
+                    } catch (e) {}
+                });
+            }
             window.removeEventListener('touchstart', unlock);
+            window.removeEventListener('touchend', unlock);
             window.removeEventListener('click', unlock);
         };
+
         window.addEventListener('touchstart', unlock, { passive: true });
+        window.addEventListener('touchend', unlock, { passive: true });
         window.addEventListener('click', unlock, { passive: true });
 
         this.bindGlobalButtonSound();
@@ -49,17 +66,17 @@ const Sound = {
             const gain = ctx.createGain();
 
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(780, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.04);
+            osc.frequency.setValueAtTime(820, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(340, ctx.currentTime + 0.05);
 
-            gain.gain.setValueAtTime(0.035, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
 
             osc.connect(gain);
             gain.connect(ctx.destination);
 
             osc.start();
-            osc.stop(ctx.currentTime + 0.04);
+            osc.stop(ctx.currentTime + 0.05);
         } catch (e) {}
     },
 
@@ -76,7 +93,7 @@ const Sound = {
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
 
-                gain.gain.setValueAtTime(0.045, ctx.currentTime + idx * 0.06);
+                gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.06);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.06 + 0.25);
 
                 osc.connect(gain);
@@ -101,7 +118,7 @@ const Sound = {
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.05);
 
-                gain.gain.setValueAtTime(0.035, ctx.currentTime + idx * 0.05);
+                gain.gain.setValueAtTime(0.10, ctx.currentTime + idx * 0.05);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.05 + 0.18);
 
                 osc.connect(gain);
@@ -126,7 +143,7 @@ const Sound = {
             osc.frequency.setValueAtTime(freq, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(freq * 0.5, ctx.currentTime + 0.03);
 
-            gain.gain.setValueAtTime(0.012, ctx.currentTime);
+            gain.gain.setValueAtTime(0.03, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0005, ctx.currentTime + 0.03);
 
             osc.connect(gain);
@@ -150,7 +167,7 @@ const Sound = {
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.04);
 
-                gain.gain.setValueAtTime(0.04, ctx.currentTime + idx * 0.04);
+                gain.gain.setValueAtTime(0.10, ctx.currentTime + idx * 0.04);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.04 + 0.14);
 
                 osc.connect(gain);
