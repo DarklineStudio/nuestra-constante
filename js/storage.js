@@ -103,31 +103,35 @@ const Storage = {
 
     async pollCloudState() {
         try {
+            const beforeStartDate = this.getStartDate();
+            const wasStartedBefore = !!beforeStartDate;
+
             const data = await this.fetchCloudDirect();
             if (data) {
                 const cloudUpdatedStr = data.updated_at || '';
                 const cloudStartDate = data.start_date || null;
 
                 const lastKnownUpdated = localStorage.getItem('nuestraconstante_lastCloudUpdated') || '';
-                const localStartDate = this.getStartDate();
 
-                const startStateChanged = (!!cloudStartDate) !== (!!localStartDate);
-                const cloudDateDiffers = cloudStartDate && localStartDate && String(cloudStartDate) !== String(localStartDate);
+                const startStateChanged = (!!cloudStartDate) !== wasStartedBefore;
+                const cloudDateDiffers = cloudStartDate && beforeStartDate && String(cloudStartDate) !== String(beforeStartDate);
                 const contentUpdated = cloudUpdatedStr && cloudUpdatedStr !== lastKnownUpdated;
 
                 if (startStateChanged || cloudDateDiffers || contentUpdated) {
                     console.log('⚡ Cambio en la nube detectado, sincronizando...');
                     localStorage.setItem('nuestraconstante_lastCloudUpdated', cloudUpdatedStr);
-                    const wasStartedBefore = !!localStartDate;
+
                     await this.syncFromCloud();
                     const isStartedNow = !!this.getStartDate();
 
                     if (!wasStartedBefore && isStartedNow) {
+                        console.log('🚀 Propuesta aceptada en otro dispositivo. Recargando al panel...');
                         window.location.href = window.location.origin + window.location.pathname + '?accepted=' + Date.now();
                         return;
                     }
 
                     if (wasStartedBefore && !isStartedNow) {
+                        console.log('🔄 Reinicio en otro dispositivo. Recargando a la propuesta...');
                         window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();
                         return;
                     }
