@@ -167,6 +167,7 @@ const Intro = {
             if (introSec) introSec.classList.add('hidden');
             if (mainSec) mainSec.classList.remove('hidden');
             if (bottomNav) bottomNav.classList.remove('hidden');
+            document.getElementById('deliveryResetBox')?.classList.add('hidden');
 
             // Initialize app dashboard counter & components
             Counter.start();

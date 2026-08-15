@@ -327,13 +327,37 @@ const Storage = {
         return list.includes(id);
     },
 
-    resetForDelivery() {
+    async resetForDelivery() {
+        // Clear all LocalStorage keys
         localStorage.removeItem(this.KEYS.START_DATE);
         localStorage.removeItem(this.KEYS.TIMELINE_EVENTS);
         localStorage.removeItem(this.KEYS.MEMORIES);
         localStorage.removeItem(this.KEYS.PAINTING);
         localStorage.removeItem(this.KEYS.PAINTING_GALLERY);
         localStorage.removeItem(this.KEYS.ACHIEVEMENTS);
+        localStorage.removeItem(this.KEYS.CUSTOM_LETTERS);
+        localStorage.removeItem(this.KEYS.MUSIC_DEDICATIONS);
+        localStorage.removeItem('nuestraconstante_publishedCapsules');
+
+        // Clear Supabase Cloud Database row as well if connected
+        if (this.supabaseClient) {
+            try {
+                await this.supabaseClient
+                    .from('relationship_state')
+                    .update({
+                        start_date: null,
+                        timeline_events: [],
+                        memories: [],
+                        painting_data: null,
+                        achievements_state: {},
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', 1);
+            } catch (e) {
+                console.warn('Cloud reset error:', e);
+            }
+        }
+
         location.reload();
     }
 };

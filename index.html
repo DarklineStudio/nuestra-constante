@@ -221,8 +221,8 @@
                     </div>
                 </div>
 
-                <!-- Reset / Prepare for Delivery Helper Widget -->
-                <div style="text-align: center; margin: 24px 0 60px 0;">
+                <!-- Reset / Prepare for Delivery Helper Widget (Disappears automatically after acceptance) -->
+                <div id="deliveryResetBox" style="text-align: center; margin: 24px 0 60px 0;">
                     <button type="button" class="btn-text-gold" onclick="window.App && window.App.confirmDeliveryReset()" style="font-size: 0.78rem; opacity: 0.8; text-decoration: underline; cursor: pointer;">
                         🔄 Preparar y reiniciar aplicación para entregársela a ella ❤️
                     </button>
@@ -517,14 +517,9 @@
 
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                         <p class="training-quote" style="margin:0;">"Crecer juntos también cuenta como entrenamiento."</p>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button type="button" id="btnOpenCreateAchievement" class="btn-primary-luxury btn-sm" onclick="window.openCreateAchievementModal ? window.openCreateAchievementModal() : (window.Training && window.Training.openCreateAchievementModal())" style="padding:6px 14px; font-size:0.75rem;">
-                                <span>🎯 + Crear Nuevo Reto</span>
-                            </button>
-                            <button type="button" id="btnResetAchievements" class="btn-primary-luxury btn-sm" onclick="window.resetAllAchievements ? window.resetAllAchievements() : (window.Training && window.Training.resetAllToLocked())" style="padding:6px 14px; font-size:0.75rem; background:rgba(255,255,255,0.08);">
-                                <span>🔄 Bloquear medallas para prueba</span>
-                            </button>
-                        </div>
+                        <button type="button" id="btnOpenCreateAchievement" class="btn-primary-luxury btn-sm" onclick="window.openCreateAchievementModal ? window.openCreateAchievementModal() : (window.Training && window.Training.openCreateAchievementModal())" style="padding:6px 14px; font-size:0.75rem;">
+                            <span>🎯 + Crear Nuevo Reto</span>
+                        </button>
                     </div>
 
                     <div id="achievementsList" class="achievements-grid">
@@ -557,9 +552,6 @@
                 <div class="nosotros-footer-actions text-center" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                     <button id="btnOpenLetterFooter" class="btn-secondary-luxury btn-sm">
                         <span>✉️ Leer carta digital</span>
-                    </button>
-                    <button id="btnResetIntro" class="btn-text-gold" style="font-size: 0.75rem; opacity: 0.7;">
-                        <span>🔄 Ver propuesta de nuevo</span>
                     </button>
                 </div>
             </section>
@@ -948,18 +940,18 @@
     </div>
 
     <!-- Application JavaScript Modules with Anti-Cache Version Protection -->
-    <script src="js/sound.js?v=2026.08.15.47"></script>
-    <script src="js/config.js?v=2026.08.15.47"></script>
-    <script src="js/storage.js?v=2026.08.15.47"></script>
-    <script src="js/intro.js?v=2026.08.15.47"></script>
-    <script src="js/counter.js?v=2026.08.15.47"></script>
-    <script src="js/timeline.js?v=2026.08.15.47"></script>
-    <script src="js/painting.js?v=2026.08.15.47"></script>
-    <script src="js/vitals.js?v=2026.08.15.47"></script>
-    <script src="js/training.js?v=2026.08.15.47"></script>
-    <script src="js/music.js?v=2026.08.15.47"></script>
-    <script src="js/letter.js?v=2026.08.15.47"></script>
-    <script src="js/capsule.js?v=2026.08.15.47"></script>
-    <script src="js/app.js?v=2026.08.15.47"></script>
+    <script src="js/sound.js?v=2026.08.15.49"></script>
+    <script src="js/config.js?v=2026.08.15.49"></script>
+    <script src="js/storage.js?v=2026.08.15.49"></script>
+    <script src="js/intro.js?v=2026.08.15.49"></script>
+    <script src="js/counter.js?v=2026.08.15.49"></script>
+    <script src="js/timeline.js?v=2026.08.15.49"></script>
+    <script src="js/painting.js?v=2026.08.15.49"></script>
+    <script src="js/vitals.js?v=2026.08.15.49"></script>
+    <script src="js/training.js?v=2026.08.15.49"></script>
+    <script src="js/music.js?v=2026.08.15.49"></script>
+    <script src="js/letter.js?v=2026.08.15.49"></script>
+    <script src="js/capsule.js?v=2026.08.15.49"></script>
+    <script src="js/app.js?v=2026.08.15.49"></script>
 </body>
 </html>

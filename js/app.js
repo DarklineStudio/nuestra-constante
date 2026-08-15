@@ -21,10 +21,11 @@ const App = {
 
         if (startDate) {
             Storage.ensureDataIntegrity();
-            // Already accepted -> Show Main App directly
-            document.getElementById('introSection').classList.add('hidden');
-            document.getElementById('mainSection').classList.remove('hidden');
-            document.getElementById('bottomNav').classList.remove('hidden');
+            // Already accepted -> Show Main App directly & hide delivery reset button forever
+            document.getElementById('introSection')?.classList.add('hidden');
+            document.getElementById('mainSection')?.classList.remove('hidden');
+            document.getElementById('bottomNav')?.classList.remove('hidden');
+            document.getElementById('deliveryResetBox')?.classList.add('hidden');
 
             Counter.start();
             Timeline.init();
