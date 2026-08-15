@@ -109,35 +109,44 @@ const Storage = {
         try {
             const { data, error } = await this.supabaseClient.from('relationship_state').select('*').single();
             if (data && !error) {
-                // Synchronize START_DATE strictly: if null in cloud, clear local devices too!
-                if (data.start_date !== undefined && data.start_date !== null && data.start_date !== '') {
+                // If cloud start_date is NULL / missing -> FORCE WIPE LOCAL MEMORY ON SAFARI/IPHONE!
+                if (data.start_date === null || data.start_date === undefined || data.start_date === '') {
+                    localStorage.removeItem(this.KEYS.START_DATE);
+                    localStorage.removeItem('ourtime_relationshipStartDate');
+                    localStorage.removeItem('nuestraconstante_relationshipStartDate');
+                    localStorage.removeItem(this.KEYS.TIMELINE_EVENTS);
+                    localStorage.removeItem('ourtime_timelineEvents');
+                    localStorage.removeItem(this.KEYS.MEMORIES);
+                    localStorage.removeItem(this.KEYS.PAINTING);
+                    localStorage.removeItem(this.KEYS.PAINTING_GALLERY);
+                    localStorage.removeItem(this.KEYS.ACHIEVEMENTS);
+                    localStorage.removeItem(this.KEYS.CUSTOM_LETTERS);
+                    localStorage.removeItem(this.KEYS.MUSIC_DEDICATIONS);
+                    localStorage.removeItem('nuestraconstante_publishedCapsules');
+                } else {
                     let ts = data.start_date.toString();
                     if (!/^\d+$/.test(ts)) {
                         const parsed = Date.parse(ts);
                         if (!isNaN(parsed)) ts = parsed.toString();
                     }
                     localStorage.setItem(this.KEYS.START_DATE, ts);
-                } else {
-                    localStorage.removeItem(this.KEYS.START_DATE);
-                    localStorage.removeItem('ourtime_relationshipStartDate');
-                    localStorage.removeItem('nuestraconstante_relationshipStartDate');
-                }
 
-                if (Array.isArray(data.timeline_events)) {
-                    localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(data.timeline_events));
-                }
-                if (Array.isArray(data.memories)) {
-                    localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(data.memories));
-                }
-                if (data.painting_data !== undefined) {
-                    if (data.painting_data) {
-                        localStorage.setItem(this.KEYS.PAINTING, data.painting_data);
-                    } else {
-                        localStorage.removeItem(this.KEYS.PAINTING);
+                    if (Array.isArray(data.timeline_events)) {
+                        localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(data.timeline_events));
                     }
-                }
-                if (data.achievements_state) {
-                    localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(data.achievements_state));
+                    if (Array.isArray(data.memories)) {
+                        localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(data.memories));
+                    }
+                    if (data.painting_data !== undefined) {
+                        if (data.painting_data) {
+                            localStorage.setItem(this.KEYS.PAINTING, data.painting_data);
+                        } else {
+                            localStorage.removeItem(this.KEYS.PAINTING);
+                        }
+                    }
+                    if (data.achievements_state) {
+                        localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(data.achievements_state));
+                    }
                 }
                 console.log('☁️ Sincronización completa desde Supabase Cloud realizada');
             }
