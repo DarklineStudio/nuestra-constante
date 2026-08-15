@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NUESTRA CONSTANTE — CLOUD PERSISTENCE & REALTIME STORAGE MODULE (Supabase/IndexedDB)
+   NUESTRA CONSTANTE — PURE CLOUD-FIRST PERSISTENCE MODULE (Supabase API)
    ========================================================================== */
 
 const Storage = {
@@ -12,25 +12,35 @@ const Storage = {
         ACHIEVEMENTS: 'nuestraconstante_achievementsState',
         CUSTOM_LETTERS: 'nuestraconstante_customLetters',
         MUSIC_DEDICATIONS: 'nuestraconstante_musicDedications',
-        STORY_CATEGORIES: 'nuestraconstante_storyCategories',
-        SUPABASE_URL: 'nuestraconstante_supabaseUrl',
-        SUPABASE_KEY: 'nuestraconstante_supabaseKey'
+        STORY_CATEGORIES: 'nuestraconstante_storyCategories'
     },
 
     supabaseClient: null,
+    pollingInterval: null,
 
-    // Initialize Supabase Cloud Connection & Realtime Listener + Heartbeat Polling
+    // Single Source of Truth Cloud Memory State
+    cloudState: {
+        start_date: null,
+        timeline_events: [],
+        memories: [],
+        painting_data: null,
+        achievements_state: {},
+        custom_letters: [],
+        music_dedications: [],
+        published_capsules: []
+    },
+
+    // Initialize Connection & Polling
     async initCloud() {
         if (window.AppConfig && AppConfig.supabase && AppConfig.supabase.url && AppConfig.supabase.url !== "YOUR_SUPABASE_URL") {
             if (window.supabase) {
                 try {
                     this.supabaseClient = window.supabase.createClient(AppConfig.supabase.url, AppConfig.supabase.anonKey);
-                    console.log('⚡ Supabase Cloud Realtime Client inicializado');
                 } catch (e) {}
             }
         }
 
-        // ALWAYS sync from Supabase Cloud using native direct fetch regardless of CDN libraries
+        // Mandatory Direct Cloud Sync before anything is rendered
         await this.syncFromCloud();
         this.subscribeToRealtime();
         this.startHeartbeatPolling();
@@ -38,7 +48,6 @@ const Storage = {
 
     startHeartbeatPolling() {
         if (this.pollingInterval) clearInterval(this.pollingInterval);
-        // Forced 2-second cloud sync polling to guarantee instant updates on mobile Safari & Android Chrome!
         this.pollingInterval = setInterval(async () => {
             await this.pollCloudState();
         }, 2000);
@@ -62,7 +71,7 @@ const Storage = {
                 }
             }
         } catch (e) {
-            console.warn('Direct fetch error:', e);
+            console.warn('Cloud fetch error:', e);
         }
         return null;
     },
@@ -97,7 +106,7 @@ const Storage = {
             const data = await this.fetchCloudDirect();
             if (data) {
                 const cloudUpdatedStr = data.updated_at || '';
-                const cloudStartDate = data.start_date;
+                const cloudStartDate = data.start_date || null;
 
                 const lastKnownUpdated = localStorage.getItem('nuestraconstante_lastCloudUpdated') || '';
                 const localStartDate = this.getStartDate();
@@ -107,25 +116,22 @@ const Storage = {
                 const contentUpdated = cloudUpdatedStr && cloudUpdatedStr !== lastKnownUpdated;
 
                 if (startStateChanged || cloudDateDiffers || contentUpdated) {
-                    console.log('⚡ Cambio detectado en tiempo real en la nube, forzando actualización...');
+                    console.log('⚡ Cambio en la nube detectado, sincronizando...');
                     localStorage.setItem('nuestraconstante_lastCloudUpdated', cloudUpdatedStr);
                     const wasStartedBefore = !!localStartDate;
                     await this.syncFromCloud();
                     const isStartedNow = !!this.getStartDate();
 
-                    // If YES proposal was accepted remotely on Device A, reload Device B immediately into Main App
                     if (!wasStartedBefore && isStartedNow) {
                         window.location.reload();
                         return;
                     }
 
-                    // If reset was triggered remotely on another device, reload immediately to proposal screen
                     if (wasStartedBefore && !isStartedNow) {
                         window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();
                         return;
                     }
 
-                    // Otherwise refresh UI components on active screen
                     if (window.Counter) window.Counter.update();
                     if (window.Timeline) window.Timeline.render();
                     if (window.Painting) window.Painting.renderMuseumGallery();
@@ -133,11 +139,10 @@ const Storage = {
                 }
             }
         } catch (e) {
-            console.log('Polling check info:', e);
+            console.log('Polling error:', e);
         }
     },
 
-    // Subscribe to realtime database changes across all devices
     subscribeToRealtime() {
         if (!this.supabaseClient) return;
         try {
@@ -152,7 +157,7 @@ const Storage = {
         }
     },
 
-    // Sync all state from Supabase Cloud to LocalStorage
+    // Sync from Supabase Cloud directly into Cloud State Memory
     async syncFromCloud() {
         try {
             let data = await this.fetchCloudDirect();
@@ -161,63 +166,47 @@ const Storage = {
                 if (res && res.data) data = res.data;
             }
 
-            if (data) {
-                // If cloud start_date is NULL / missing -> FORCE WIPE LOCAL MEMORY ON SAFARI/IPHONE!
-                if (data.start_date === null || data.start_date === undefined || data.start_date === '') {
-                    localStorage.removeItem(this.KEYS.START_DATE);
-                    localStorage.removeItem('ourtime_relationshipStartDate');
-                    localStorage.removeItem('nuestraconstante_relationshipStartDate');
-                    localStorage.removeItem(this.KEYS.TIMELINE_EVENTS);
-                    localStorage.removeItem('ourtime_timelineEvents');
-                    localStorage.removeItem(this.KEYS.MEMORIES);
-                    localStorage.removeItem(this.KEYS.PAINTING);
-                    localStorage.removeItem(this.KEYS.PAINTING_GALLERY);
-                    localStorage.removeItem(this.KEYS.ACHIEVEMENTS);
-                    localStorage.removeItem(this.KEYS.CUSTOM_LETTERS);
-                    localStorage.removeItem(this.KEYS.MUSIC_DEDICATIONS);
-                    localStorage.removeItem('nuestraconstante_publishedCapsules');
-                } else {
-                    let ts = data.start_date.toString();
-                    if (!/^\d+$/.test(ts)) {
-                        const parsed = Date.parse(ts);
-                        if (!isNaN(parsed)) ts = parsed.toString();
-                    }
-                    localStorage.setItem(this.KEYS.START_DATE, ts);
-
-                    if (Array.isArray(data.timeline_events)) {
-                        localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(data.timeline_events));
-                    }
-                    if (Array.isArray(data.memories)) {
-                        localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(data.memories));
-                    }
-                    if (data.painting_data !== undefined) {
-                        if (data.painting_data) {
-                            localStorage.setItem(this.KEYS.PAINTING, data.painting_data);
-                        } else {
-                            localStorage.removeItem(this.KEYS.PAINTING);
-                        }
-                    }
-                    if (data.achievements_state) {
-                        localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(data.achievements_state));
-                    }
+            if (data && data.start_date !== null && data.start_date !== undefined && data.start_date !== '') {
+                let ts = data.start_date.toString();
+                if (!/^\d+$/.test(ts)) {
+                    const parsed = Date.parse(ts);
+                    if (!isNaN(parsed)) ts = parsed.toString();
                 }
-                console.log('☁️ Sincronización completa desde Supabase Cloud realizada');
+                this.cloudState.start_date = ts;
+                this.cloudState.timeline_events = Array.isArray(data.timeline_events) ? data.timeline_events : [];
+                this.cloudState.memories = Array.isArray(data.memories) ? data.memories : [];
+                this.cloudState.painting_data = data.painting_data || null;
+                this.cloudState.achievements_state = data.achievements_state || {};
+                
+                // Secondary mirror to local storage
+                localStorage.setItem(this.KEYS.START_DATE, ts);
+                localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(this.cloudState.timeline_events));
+            } else {
+                // Cloud DB is RESET or NULL
+                this.cloudState.start_date = null;
+                this.cloudState.timeline_events = [];
+                this.cloudState.memories = [];
+                this.cloudState.painting_data = null;
+                this.cloudState.achievements_state = {};
+                try {
+                    localStorage.clear();
+                } catch (e) {}
             }
+            console.log('☁️ Memoria central cargada desde Supabase Cloud');
         } catch (e) {
             console.log('Cloud sync info:', e);
         }
     },
 
-    // Save full state to Supabase Cloud
     async syncToCloud() {
         try {
             const payload = {
-                id: 1, // Single row pair state
-                start_date: this.getStartDate(),
-                timeline_events: this.getTimelineEvents(),
-                memories: this.getMemories(),
-                painting_data: this.getPainting(),
-                achievements_state: this.getAchievementsState(),
+                id: 1,
+                start_date: this.cloudState.start_date,
+                timeline_events: this.cloudState.timeline_events,
+                memories: this.cloudState.memories,
+                painting_data: this.cloudState.painting_data,
+                achievements_state: this.cloudState.achievements_state,
                 updated_at: new Date().toISOString()
             };
 
@@ -229,7 +218,7 @@ const Storage = {
 
     ensureDataIntegrity() {
         let startDateTs = this.getStartDate();
-        if (!startDateTs) return; // Never auto-generate a start date if not accepted yet!
+        if (!startDateTs) return;
 
         let events = this.getTimelineEvents();
         if (!events || events.length === 0) {
@@ -242,14 +231,15 @@ const Storage = {
                 description: 'El día en que comenzó nuestro tiempo y nuestra historia vital.',
                 isInitial: true
             };
-            this.addTimelineEvent(initialEvent);
+            this.cloudState.timeline_events.push(initialEvent);
+            this.syncToCloud();
         }
     },
 
-    // Start Date Management
+    // Getters & Setters read directly from Cloud State Memory
     getStartDate() {
-        const val = localStorage.getItem(this.KEYS.START_DATE);
-        if (!val) return null;
+        if (!this.cloudState.start_date) return null;
+        const val = this.cloudState.start_date.toString();
         if (/^\d+$/.test(val.trim())) {
             return parseInt(val.trim(), 10);
         }
@@ -257,258 +247,130 @@ const Storage = {
         return isNaN(parsed) ? null : parsed;
     },
 
-    setStartDate(timestamp) {
+    async setStartDate(timestamp) {
         const ts = (timestamp || Date.now()).toString();
+        this.cloudState.start_date = ts;
         localStorage.setItem(this.KEYS.START_DATE, ts);
-        localStorage.removeItem('ourtime_relationshipStartDate');
-        this.syncToCloud();
+        await this.syncToCloud();
     },
 
-    // Timeline Events Management
     getTimelineEvents() {
-        const data = localStorage.getItem(this.KEYS.TIMELINE_EVENTS) || localStorage.getItem('ourtime_timelineEvents');
-        let events = [];
-        try {
-            events = data ? JSON.parse(data) : [];
-        } catch (e) {
-            events = [];
-        }
-        return events;
+        return this.cloudState.timeline_events || [];
     },
 
-    addTimelineEvent(event) {
-        const events = this.getTimelineEvents();
-        events.unshift(event);
-        try {
-            localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(events));
-        } catch (e) {
-            console.warn('LocalStorage limit reached for photos, saving event without heavy photo payload', e);
-            if (event.photo && event.photo.length > 500000) {
-                event.photo = null;
-                localStorage.setItem(this.KEYS.TIMELINE_EVENTS, JSON.stringify(events));
-            }
-        }
-        this.syncToCloud();
-        return events;
+    async addTimelineEvent(event) {
+        this.cloudState.timeline_events.unshift(event);
+        await this.syncToCloud();
+        return this.cloudState.timeline_events;
     },
 
-    // Photo Memories Gallery Management
+    async deleteTimelineEvent(id) {
+        this.cloudState.timeline_events = this.cloudState.timeline_events.filter(e => String(e.id) !== String(id));
+        await this.syncToCloud();
+        return this.cloudState.timeline_events;
+    },
+
     getMemories() {
-        const data = localStorage.getItem(this.KEYS.MEMORIES);
-        return data ? JSON.parse(data) : [];
+        return this.cloudState.memories || [];
     },
 
-    addMemory(memory) {
-        const memories = this.getMemories();
-        memories.unshift(memory);
-        try {
-            localStorage.setItem(this.KEYS.MEMORIES, JSON.stringify(memories));
-        } catch (e) {
-            console.warn('LocalStorage error', e);
-        }
-        this.syncToCloud();
-        return memories;
+    async addMemory(memory) {
+        this.cloudState.memories.unshift(memory);
+        await this.syncToCloud();
+        return this.cloudState.memories;
     },
 
-    // Painting Canvas & Gallery Collection Management
     getPainting() {
-        return localStorage.getItem(this.KEYS.PAINTING);
+        return this.cloudState.painting_data || null;
     },
 
-    savePainting(dataUrl) {
-        try {
-            localStorage.setItem(this.KEYS.PAINTING, dataUrl);
-        } catch (e) {}
-        this.syncToCloud();
+    async savePainting(paintingData) {
+        this.cloudState.painting_data = paintingData;
+        await this.syncToCloud();
     },
 
-    getPaintingGallery() {
-        try {
-            const data = localStorage.getItem(this.KEYS.PAINTING_GALLERY);
-            return data ? JSON.parse(data) : [];
-        } catch (e) {
-            return [];
-        }
+    getAchievementsState() {
+        return this.cloudState.achievements_state || {};
     },
 
-    savePaintingToGallery(item) {
-        try {
-            const gallery = this.getPaintingGallery();
-            gallery.unshift(item); // Insert newest at top (chronological ordering)
-            localStorage.setItem(this.KEYS.PAINTING_GALLERY, JSON.stringify(gallery));
-        } catch (e) {
-            console.warn('LocalStorage error while saving artwork', e);
-        }
-        this.syncToCloud();
+    async saveAchievementState(achievementId, isUnlocked, unlockedAt) {
+        if (!this.cloudState.achievements_state) this.cloudState.achievements_state = {};
+        this.cloudState.achievements_state[achievementId] = { isUnlocked, unlockedAt };
+        await this.syncToCloud();
     },
 
-    deletePaintingFromGallery(id) {
-        try {
-            let gallery = this.getPaintingGallery();
-            gallery = gallery.filter(item => String(item.id) !== String(id));
-            localStorage.setItem(this.KEYS.PAINTING_GALLERY, JSON.stringify(gallery));
-            // Always clear legacy single painting to prevent 2-step deletion fallback bug
-            localStorage.removeItem(this.KEYS.PAINTING);
-        } catch (e) {}
-        this.syncToCloud();
-    },
-
-    // Story Categories Management
     getStoryCategories() {
-        const defaultCats = ['✈️ Viajes', '🏋️‍♂️ Gym', '🥋 Taekwondo', '🌹 Citas', '✨ Especiales'];
+        const defaultCategories = ['✨ Especiales', '✈️ Viajes & Citas', '🏋️ Deporte & Entrenamiento', '🌹 San Valentín & Fechas'];
+        const saved = localStorage.getItem(this.KEYS.STORY_CATEGORIES);
+        if (!saved) return defaultCategories;
         try {
-            const data = localStorage.getItem(this.KEYS.STORY_CATEGORIES);
-            if (!data) return defaultCats;
-            const parsed = JSON.parse(data);
-            return Array.isArray(parsed) && parsed.length > 0 ? parsed : defaultCats;
+            const list = JSON.parse(saved);
+            return Array.from(new Set([...defaultCategories, ...list]));
         } catch (e) {
-            return defaultCats;
+            return defaultCategories;
         }
     },
 
     addStoryCategory(category) {
-        if (!category || typeof category !== 'string') return;
-        const cleanCat = category.trim();
-        if (!cleanCat) return;
-        
-        const categories = this.getStoryCategories();
-        if (!categories.includes(cleanCat)) {
-            categories.push(cleanCat);
-            try {
-                localStorage.setItem(this.KEYS.STORY_CATEGORIES, JSON.stringify(categories));
-            } catch (e) {}
-            this.syncToCloud();
+        const current = this.getStoryCategories();
+        if (!current.includes(category)) {
+            current.push(category);
+            localStorage.setItem(this.KEYS.STORY_CATEGORIES, JSON.stringify(current));
         }
-        return categories;
+        return current;
     },
 
-    // Achievements State Management
-    getAchievementsState() {
-        const data = localStorage.getItem(this.KEYS.ACHIEVEMENTS);
-        return data ? JSON.parse(data) : {};
-    },
-
-    saveAchievementState(id, isUnlocked, unlockDate) {
-        const state = this.getAchievementsState();
-        state[id] = { unlocked: isUnlocked, date: unlockDate || new Date().toISOString() };
-        try {
-            localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify(state));
-        } catch (e) {}
-        this.syncToCloud();
-    },
-
-    clearAchievements() {
-        localStorage.setItem(this.KEYS.ACHIEVEMENTS, JSON.stringify({}));
-        this.syncToCloud();
-    },
-
-    getCustomAchievements() {
-        const data = localStorage.getItem('nuestraconstante_customAchievements');
-        return data ? JSON.parse(data) : [];
-    },
-
-    addCustomAchievement(ach) {
-        const list = this.getCustomAchievements();
-        list.push(ach);
-        localStorage.setItem('nuestraconstante_customAchievements', JSON.stringify(list));
-        this.syncToCloud();
-        return list;
-    },
-
-    getCustomCapsules() {
-        const data = localStorage.getItem('nuestraconstante_customCapsules');
-        return data ? JSON.parse(data) : [];
-    },
-
-    addCustomCapsule(capsule) {
-        const list = this.getCustomCapsules();
-        list.push(capsule);
-        localStorage.setItem('nuestraconstante_customCapsules', JSON.stringify(list));
-        this.syncToCloud();
-        return list;
-    },
-
-    // Custom Letters Management
     getCustomLetters() {
-        const data = localStorage.getItem(this.KEYS.CUSTOM_LETTERS);
-        return data ? JSON.parse(data) : [];
+        return this.cloudState.custom_letters || [];
     },
 
-    addCustomLetter(letter) {
-        const letters = this.getCustomLetters();
-        letters.unshift(letter);
-        localStorage.setItem(this.KEYS.CUSTOM_LETTERS, JSON.stringify(letters));
-        this.syncToCloud();
-        return letters;
+    async addCustomLetter(letter) {
+        this.cloudState.custom_letters.unshift(letter);
+        await this.syncToCloud();
+        return this.cloudState.custom_letters;
     },
 
-    // Music Dedications Management
     getMusicDedications() {
-        const data = localStorage.getItem(this.KEYS.MUSIC_DEDICATIONS);
-        return data ? JSON.parse(data) : [];
+        return this.cloudState.music_dedications || [];
     },
 
-    addMusicDedication(song) {
-        const songs = this.getMusicDedications();
-        songs.unshift(song);
-        localStorage.setItem(this.KEYS.MUSIC_DEDICATIONS, JSON.stringify(songs));
-        this.syncToCloud();
-        return songs;
+    async addMusicDedication(song) {
+        this.cloudState.music_dedications.unshift(song);
+        await this.syncToCloud();
+        return this.cloudState.music_dedications;
     },
 
-    deleteMusicDedication(id) {
-        let songs = this.getMusicDedications();
-        songs = songs.filter(s => String(s.id) !== String(id));
-        localStorage.setItem(this.KEYS.MUSIC_DEDICATIONS, JSON.stringify(songs));
-        this.syncToCloud();
-        return songs;
-    },
-
-    // Published Capsules Management (Immutability Seal)
-    getPublishedCapsules() {
-        const data = localStorage.getItem('nuestraconstante_publishedCapsules');
-        return data ? JSON.parse(data) : [];
-    },
-
-    markCapsulePublished(id) {
-        const list = this.getPublishedCapsules();
-        if (!list.includes(id)) {
-            list.push(id);
-            localStorage.setItem('nuestraconstante_publishedCapsules', JSON.stringify(list));
-            this.syncToCloud();
-        }
-        return list;
-    },
-
-    isCapsulePublished(id) {
-        const list = this.getPublishedCapsules();
-        return list.includes(id);
+    async deleteMusicDedication(id) {
+        this.cloudState.music_dedications = this.cloudState.music_dedications.filter(s => String(s.id) !== String(id));
+        await this.syncToCloud();
+        return this.cloudState.music_dedications;
     },
 
     async resetForDelivery() {
+        this.cloudState.start_date = null;
+        this.cloudState.timeline_events = [];
+        this.cloudState.memories = [];
+        this.cloudState.painting_data = null;
+        this.cloudState.achievements_state = {};
+        this.cloudState.custom_letters = [];
+        this.cloudState.music_dedications = [];
+
         try {
             localStorage.clear();
-        } catch (e) {
-            console.warn('LocalStorage clear error:', e);
-        }
+        } catch (e) {}
 
-        // Clear Supabase Cloud Database row directly
-        try {
-            await this.saveCloudDirect({
-                id: 1,
-                start_date: null,
-                timeline_events: [],
-                memories: [],
-                painting_data: null,
-                achievements_state: {},
-                updated_at: new Date().toISOString()
-            });
-        } catch (e) {
-            console.warn('Cloud reset error:', e);
-        }
+        await this.saveCloudDirect({
+            id: 1,
+            start_date: null,
+            timeline_events: [],
+            memories: [],
+            painting_data: null,
+            achievements_state: {},
+            updated_at: new Date().toISOString()
+        });
 
-        // Hard reload bypassing cache directly to proposal
         window.location.href = window.location.origin + window.location.pathname + '?reset=' + Date.now();
     }
 };
 
+window.Storage = Storage;
