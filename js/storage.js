@@ -395,15 +395,15 @@ const Storage = {
             try {
                 await this.supabaseClient
                     .from('relationship_state')
-                    .update({
+                    .upsert({
+                        id: 1,
                         start_date: null,
                         timeline_events: [],
                         memories: [],
                         painting_data: null,
                         achievements_state: {},
                         updated_at: new Date().toISOString()
-                    })
-                    .eq('id', 1);
+                    });
             } catch (e) {
                 console.warn('Cloud reset error:', e);
             }
