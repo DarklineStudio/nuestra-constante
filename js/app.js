@@ -226,9 +226,11 @@ const App = {
 
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('PWA ServiceWorker registrado:', reg.scope))
-                .catch(err => console.log('PWA ServiceWorker error:', err));
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let reg of registrations) {
+                    reg.unregister();
+                }
+            }).catch(() => {});
         }
     }
 };

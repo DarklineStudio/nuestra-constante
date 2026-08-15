@@ -23,13 +23,17 @@ const Storage = {
     async initCloud() {
         if (window.AppConfig && AppConfig.supabase && AppConfig.supabase.url && AppConfig.supabase.url !== "YOUR_SUPABASE_URL") {
             if (window.supabase) {
-                this.supabaseClient = window.supabase.createClient(AppConfig.supabase.url, AppConfig.supabase.anonKey);
-                console.log('⚡ Supabase Cloud Database conectado exitosamente');
-                await this.syncFromCloud();
-                this.subscribeToRealtime();
-                this.startHeartbeatPolling();
+                try {
+                    this.supabaseClient = window.supabase.createClient(AppConfig.supabase.url, AppConfig.supabase.anonKey);
+                    console.log('⚡ Supabase Cloud Realtime Client inicializado');
+                } catch (e) {}
             }
         }
+
+        // ALWAYS sync from Supabase Cloud using native direct fetch regardless of CDN libraries
+        await this.syncFromCloud();
+        this.subscribeToRealtime();
+        this.startHeartbeatPolling();
     },
 
     startHeartbeatPolling() {
