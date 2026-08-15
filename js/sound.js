@@ -50,7 +50,7 @@ const Sound = {
             if (btn) {
                 this.playClick();
             }
-        }, { passive: true });
+        });
     },
 
     playTone(freqList, duration = 0.15, gainVal = 0.15, type = 'sine') {
