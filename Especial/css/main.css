@@ -1,0 +1,198 @@
+/* ==========================================================================
+   OUR TIME — MAIN CSS DESIGN SYSTEM
+   Luxury, Romantic, Minimalist Dark Aesthetic
+   ========================================================================== */
+
+:root {
+    /* Color Palette */
+    --bg-deep: #0a0a0c;
+    --bg-surface: #121216;
+    --bg-surface-elevated: #1a1a22;
+    --bg-glass: rgba(22, 22, 28, 0.72);
+    --bg-glass-card: rgba(28, 28, 36, 0.65);
+    
+    --border-gold-subtle: rgba(230, 200, 117, 0.18);
+    --border-gold-glow: rgba(230, 200, 117, 0.45);
+    --border-white-subtle: rgba(255, 255, 255, 0.08);
+
+    --accent-gold: #e6c875;
+    --accent-gold-light: #f5e4b3;
+    --accent-gold-dark: #b89842;
+    --accent-rose: #c94a5e;
+    --accent-rose-soft: rgba(201, 74, 94, 0.2);
+
+    --text-primary: #f2f2f5;
+    --text-secondary: #a0a0b2;
+    --text-muted: #6e6e82;
+    --text-gold: #e6c875;
+
+    /* Typography */
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Shadows & Effects */
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --shadow-gold-glow: 0 0 25px rgba(230, 200, 117, 0.15);
+    --backdrop-blur: blur(20px) saturate(180%);
+
+    /* Layout Spacing */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-full: 9999px;
+    --nav-height: 68px;
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    touch-action: manipulation;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Background Ambient Canvas */
+#ambientCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+/* Root Container */
+#appContainer {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Layout Utilities */
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #14141c 0%, #0a0a0c 100%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: hidden;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+}
+
+.main-layout {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 20px calc(var(--nav-height) + 30px) 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+    background: var(--bg-glass-card);
+    backdrop-filter: var(--backdrop-blur);
+    -webkit-backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--border-gold-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 45%,
+        rgba(230, 200, 117, 0.05) 50%,
+        transparent 55%
+    );
+    pointer-events: none;
+}
+
+/* Typography Base Classes */
+.luxury-title {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--text-primary);
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+/* Utility Visibility Classes */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.gold-text {
+    color: var(--accent-gold) !important;
+}
+
+.highlight-red {
+    color: var(--accent-rose) !important;
+}
+
+.full-width {
+    width: 100%;
+}

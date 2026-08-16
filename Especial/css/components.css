@@ -1,0 +1,2159 @@
+/* ==========================================================================
+   OUR TIME — COMPONENTS CSS
+   Buttons, Clock, Timeline, Canvas, Medical Vitals, Gallery, Modals, Nav
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BUTTONS (Luxury, Shimmer & Micro-interactions)
+   -------------------------------------------------------------------------- */
+button {
+    font-family: var(--font-sans);
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Primary Gold Button */
+.btn-primary-luxury {
+    background: linear-gradient(135deg, #e6c875 0%, #b89842 100%);
+    color: #0a0a0c;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.05em;
+    padding: 16px 36px;
+    border-radius: var(--radius-full);
+    box-shadow: 0 8px 24px rgba(230, 200, 117, 0.25);
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-primary-luxury:hover, .btn-primary-luxury:active {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(230, 200, 117, 0.4);
+    filter: brightness(1.08);
+}
+
+/* Secondary Glass Button */
+.btn-secondary-luxury {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    border: 1px solid var(--border-white-subtle);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary-luxury:hover, .btn-secondary-luxury:active {
+    background: rgba(230, 200, 117, 0.1);
+    border-color: var(--border-gold-subtle);
+    color: var(--text-gold);
+}
+
+/* Large Intro Glow Button */
+.btn-luxury.glow-btn {
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    letter-spacing: 0.18em;
+    padding: 16px 48px;
+    border-radius: var(--radius-full);
+    position: relative;
+    overflow: hidden;
+    animation: goldGlowPulse 3s infinite ease-in-out;
+}
+
+.btn-luxury.glow-btn:hover {
+    background: rgba(230, 200, 117, 0.15);
+    transform: scale(1.03);
+}
+
+.btn-sm {
+    padding: 10px 20px !important;
+    font-size: 0.88rem !important;
+    width: auto !important;
+}
+
+.btn-text-gold {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    padding: 8px 14px;
+}
+
+.btn-text-gold:hover {
+    color: var(--accent-gold);
+}
+
+.btn-icon-gold {
+    color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.1);
+    border: 1px solid var(--border-gold-subtle);
+    padding: 10px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-gold:hover {
+    background: rgba(230, 200, 117, 0.2);
+    transform: scale(1.05);
+}
+
+
+/* --------------------------------------------------------------------------
+   2. INTRO & PROPOSAL STEP COMPONENTS
+   -------------------------------------------------------------------------- */
+.intro-content {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+}
+
+.intro-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.intro-step.hidden {
+    display: none !important;
+}
+
+.intro-text {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.intro-text-small {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+.intro-text-highlight {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.brand-title {
+    font-size: 3.5rem;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, #ffffff 20%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+}
+
+/* Proposal Card */
+.proposal-card {
+    width: 100%;
+    padding: 36px 24px;
+    text-align: center;
+    border-color: var(--border-gold-glow);
+}
+
+.proposal-badge {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.1);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-gold-subtle);
+}
+
+.proposal-question {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    margin: 20px 0 32px 0;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.proposal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.yes-celebration {
+    text-align: center;
+    padding: 20px;
+}
+
+.celebration-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.celebration-title {
+    font-size: 2.8rem;
+    color: var(--accent-gold);
+    line-height: 1.2;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. APP HEADER
+   -------------------------------------------------------------------------- */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-white-subtle);
+}
+
+.header-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.header-tagline {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. TAB 1: LUXURY CLOCK COUNTER
+   -------------------------------------------------------------------------- */
+.clock-container {
+    padding: 28px 20px;
+    border-color: rgba(230, 200, 117, 0.25);
+    background: linear-gradient(180deg, rgba(28, 28, 38, 0.75) 0%, rgba(18, 18, 24, 0.85) 100%);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.clock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.clock-live-indicator {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.pulse-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulseDot 2s infinite;
+}
+
+.clock-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.clock-primary-display {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.clock-days-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.clock-number-large {
+    font-family: var(--font-sans);
+    font-size: 4.2rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #ffffff 40%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-unit-large {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.clock-hms-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+}
+
+.hms-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clock-number-medium {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.hms-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hms-divider {
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    opacity: 0.6;
+    margin-top: -12px;
+}
+
+.clock-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-gold-subtle), transparent);
+    margin: 24px 0 20px 0;
+}
+
+.clock-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    text-align: center;
+}
+
+.clock-days-wrapper {
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.clock-days-wrapper:hover, .clock-days-wrapper:active {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 12px rgba(230, 200, 117, 0.4));
+}
+
+.hms-item {
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.hms-item:hover, .hms-item:active {
+    transform: translateY(-2px);
+    color: var(--accent-gold);
+}
+
+.breakdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-white-subtle);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.breakdown-item:hover, .breakdown-item:active {
+    border-color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.08);
+    transform: translateY(-2px);
+}
+
+.breakdown-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.breakdown-label {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.clock-footer {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.start-date-text {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    letter-spacing: 0.02em;
+}
+
+/* Digital Letter Snippet Card */
+.letter-entry-card {
+    position: relative;
+    padding: 22px;
+    border-color: rgba(230, 200, 117, 0.2);
+    transition: all 0.3s ease;
+}
+
+.letter-entry-card:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+}
+
+.letter-card-glow {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(230, 200, 117, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.letter-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.letter-card-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin: 6px 0 8px 0;
+}
+
+.letter-card-snippet {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.letter-read-more {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+
+/* --------------------------------------------------------------------------
+   5. TAB 2: TIMELINE (Nuestra Historia)
+   -------------------------------------------------------------------------- */
+.timeline-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+}
+
+.timeline-container {
+    position: relative;
+    padding-left: 24px;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 10px;
+    left: 7px;
+    width: 2px;
+    height: calc(100% - 20px);
+    background: linear-gradient(180deg, var(--accent-gold) 0%, rgba(230, 200, 117, 0.15) 100%);
+}
+
+.timeline-event-card {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.timeline-node {
+    position: absolute;
+    top: 20px;
+    left: -24px;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    background: var(--bg-deep);
+    border: 2px solid var(--accent-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(230, 200, 117, 0.4);
+    z-index: 2;
+}
+
+.timeline-node.initial-node {
+    background: var(--accent-gold);
+    box-shadow: 0 0 15px rgba(230, 200, 117, 0.8);
+}
+
+.event-date-badge {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--accent-gold);
+    font-weight: 600;
+    text-transform: uppercase;
+
+}
+
+.event-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin: 4px 0 8px 0;
+}
+
+.event-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.event-photo {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-top: 14px;
+    border: 1px solid var(--border-white-subtle);
+}
+
+
+/* --------------------------------------------------------------------------
+   6. TAB 3: MEMORIES GALLERY
+   -------------------------------------------------------------------------- */
+.gallery-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.memories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.memory-card {
+    background: var(--bg-glass-card);
+    border: 1px solid var(--border-white-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.memory-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-gold-subtle);
+}
+
+.memory-img-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #181820;
+}
+
+.memory-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.memory-card:hover img {
+    transform: scale(1.05);
+}
+
+.memory-meta {
+    padding: 10px 4px 4px 4px;
+}
+
+.memory-title {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.memory-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   7. TAB 4: INTERACTIVE CANVAS (Nuestra Pintura)
+   -------------------------------------------------------------------------- */
+.painting-workspace {
+    padding: 16px;
+}
+
+.canvas-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #0f0f14;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-white-subtle);
+    touch-action: none;
+    position: relative;
+}
+
+#paintCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: crosshair;
+}
+
+.canvas-stage-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.1);
+    border: 1px solid var(--border-gold-subtle);
+    padding: 4px 14px;
+    border-radius: var(--radius-full);
+    margin-top: 8px;
+}
+
+.canvas-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-white-subtle);
+}
+
+.color-picker-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-btn.active {
+    transform: scale(1.2);
+    border-color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.eraser-btn {
+    background: var(--bg-surface-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.brush-size-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brush-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+#brushSize {
+    width: 80px;
+    accent-color: var(--accent-gold);
+}
+
+.canvas-action-btns {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.painting-roadmap {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.roadmap-title {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.roadmap-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.roadmap-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.roadmap-step.current {
+    opacity: 1;
+}
+
+.roadmap-step.current .step-icon {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(230, 200, 117, 0.4);
+}
+
+.step-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-gold-subtle);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+
+/* --------------------------------------------------------------------------
+   8. TAB 5: MEDICAL VITALS & TRAINING ACHIEVEMENTS
+   -------------------------------------------------------------------------- */
+.vitals-container {
+    margin-bottom: 24px;
+    border-color: rgba(201, 74, 94, 0.25);
+}
+
+.vitals-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.vitals-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vitals-icon {
+    font-size: 1.3rem;
+}
+
+.vitals-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.vitals-pulse-badge {
+    font-size: 0.68rem;
+    color: var(--accent-rose);
+    background: var(--accent-rose-soft);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+/* ECG Monitor Box */
+.ecg-monitor-box {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    background: #080a0f;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid rgba(201, 74, 94, 0.2);
+    margin-bottom: 20px;
+}
+
+#mainEcgCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.ecg-overlay-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 15px 15px;
+    background-image: 
+        linear-gradient(to right, rgba(201, 74, 94, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(201, 74, 94, 0.05) 1px, transparent 1px);
+    pointer-events: none;
+}
+
+.vitals-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.vital-metric {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-white-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-key {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-val {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 2px;
+}
+
+.vitals-prescription {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(230, 200, 117, 0.05);
+    border: 1px dashed var(--border-gold-subtle);
+    padding: 16px;
+    border-radius: var(--radius-md);
+}
+
+.rx-symbol {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    line-height: 1;
+}
+
+.rx-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.rx-quote {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+/* Training Achievements Section */
+.training-container {
+    padding: 24px;
+}
+
+.training-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.training-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.training-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.training-badge {
+    font-size: 0.68rem;
+    color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.1);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+}
+
+.training-quote {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.achievement-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-white-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.achievement-card.unlocked {
+    border-color: var(--border-gold-subtle);
+    background: linear-gradient(180deg, rgba(230, 200, 117, 0.08) 0%, rgba(20, 20, 28, 0.4) 100%);
+}
+
+.achievement-icon {
+    font-size: 1.8rem;
+}
+
+.achievement-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.achievement-status {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.achievement-card.unlocked .achievement-status {
+    color: var(--accent-gold);
+}
+
+
+/* --------------------------------------------------------------------------
+   9. BOTTOM NAVIGATION BAR
+   -------------------------------------------------------------------------- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    height: var(--nav-height);
+    background: rgba(14, 14, 18, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-white-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 100;
+    padding: 0 10px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    transition: color 0.3s ease, transform 0.2s ease;
+    width: 20%;
+}
+
+.nav-item.active {
+    color: var(--accent-gold);
+}
+
+.nav-item.active svg {
+    stroke: var(--accent-gold);
+    transform: scale(1.1);
+}
+
+
+/* --------------------------------------------------------------------------
+   10. MODALS & LIGHTBOX
+   -------------------------------------------------------------------------- */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   13. INSTAGRAM-STYLE PROFILE FEED & PINNED POSTS
+   -------------------------------------------------------------------------- */
+
+.insta-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-color: var(--border-gold-glow);
+}
+
+.insta-avatar-ring {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #e6c875, #c94a5e, #e6c875);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(230, 200, 117, 0.3);
+}
+
+.insta-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #0d0d12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    color: var(--accent-gold);
+    font-size: 1.3rem;
+}
+
+.insta-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.insta-username-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.insta-username {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.insta-badge-check {
+    background: var(--accent-gold);
+    color: #0a0a0c;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.insta-bio {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.insta-stats-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+}
+
+.insta-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-num {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+}
+
+.stat-lbl {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.feed-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+}
+
+/* Instagram Feed Post Card */
+.insta-feed-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.insta-post-card {
+    padding: 0;
+    overflow: hidden;
+    border-color: rgba(255, 255, 255, 0.08);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.insta-post-card.pinned-post {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 25px rgba(230, 200, 117, 0.15);
+}
+
+.insta-post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.post-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e6c875, #785e20);
+    color: #0a0a0c;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-user-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-username {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.post-location {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.post-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pinned-tag-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(230, 200, 117, 0.15);
+    color: var(--accent-gold);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-gold-subtle);
+}
+
+.post-opt-btn {
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-opt-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.insta-post-media {
+    width: 100%;
+    background: #080a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 0;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post-image:hover {
+    transform: scale(1.01);
+}
+
+.post-text-artwork {
+    padding: 40px 24px;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(230, 200, 117, 0.12) 0%, rgba(10, 10, 12, 0.95) 100%);
+    width: 100%;
+}
+
+.post-artwork-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    color: var(--accent-gold-light);
+    margin-bottom: 8px;
+}
+
+.post-artwork-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.insta-post-bar {
+    padding: 12px 16px 4px 16px;
+    display: flex;
+    align-items: center;
+}
+
+.post-like-btn {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.post-like-btn.liked .heart-icon {
+    transform: scale(1.1);
+}
+
+.like-count {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.insta-post-caption {
+    padding: 4px 16px 16px 16px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.caption-username {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-right: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   14. MUSIC DEDICATIONS MODULE ("Nuestra Música")
+   -------------------------------------------------------------------------- */
+
+.music-feed-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.music-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-color: rgba(230, 200, 117, 0.25);
+    background: radial-gradient(circle at top right, rgba(230, 200, 117, 0.08) 0%, rgba(10, 10, 12, 0.95) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.music-vinyl-box {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+}
+
+.vinyl-disc {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a1a24 20%, #0d0d12 21%, #050508 60%, #1c1a16 100%);
+    border: 2px solid var(--border-gold-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.8), inset 0 0 8px rgba(230, 200, 117, 0.3);
+    flex-shrink: 0;
+}
+
+.vinyl-disc.spinning {
+    animation: spinVinyl 12s linear infinite;
+}
+
+@keyframes spinVinyl {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.vinyl-center {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    border: 2px solid #000;
+}
+
+.music-info-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.music-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+}
+
+.music-song-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.music-artist-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.music-quote-box {
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.35);
+    border-left: 3px solid var(--accent-gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.music-quote {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--accent-gold-light);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.music-date-stamp {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.music-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+
+
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(12px);
+}
+
+.modal-card {
+    position: relative;
+    z-index: 2001;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 1.6rem;
+    color: var(--text-muted);
+}
+
+.modal-close-btn:hover {
+    color: #ffffff;
+}
+
+.modal-title {
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.modal-quote {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--accent-gold);
+    margin: 20px 0 24px 0;
+    line-height: 1.4;
+}
+
+#noticeMessage {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+#noticeMessage span, #noticeMessage em {
+    color: var(--accent-gold-light) !important;
+    font-size: 1.0rem !important;
+    font-weight: 500 !important;
+    opacity: 1 !important;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.form-group input, .form-group textarea {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-white-subtle);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    border-color: var(--accent-gold);
+}
+
+/* Digital Letter Modal */
+.letter-modal-card {
+    padding: 40px 28px;
+    text-align: center;
+    border-color: var(--border-gold-glow);
+}
+
+.letter-modal-tag {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent-gold);
+}
+
+.letter-paragraphs {
+    margin: 30px 0 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.letter-p {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    color: #ffffff;
+    font-style: italic;
+}
+
+.letter-brand {
+    font-size: 2.2rem;
+    color: var(--accent-gold);
+    letter-spacing: 0.15em;
+}
+
+.letter-date-stamp {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 4px;
+}
+
+/* Lightbox Modal */
+.lightbox-content {
+    position: relative;
+    z-index: 2001;
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.lightbox-content img {
+    width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+.lightbox-caption {
+    padding: 16px 20px;
+}
+
+.lightbox-title {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--text-primary);
+}
+
+.lightbox-date {
+    font-size: 0.75rem;
+    color: var(--accent-gold);
+    display: block;
+    margin: 2px 0 8px 0;
+}
+
+.lightbox-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   11. NEW ASTONISHING FEATURES STYLING
+   -------------------------------------------------------------------------- */
+
+/* Poetic Counter Click Targets */
+.clock-days-wrapper, .hms-item, .breakdown-item {
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.clock-days-wrapper:hover, .hms-item:hover, .breakdown-item:hover {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 12px rgba(230, 200, 117, 0.5));
+}
+
+.clock-click-hint {
+    font-size: 0.68rem;
+    color: var(--accent-gold);
+    text-align: center;
+    margin-top: 6px;
+    opacity: 0.8;
+    letter-spacing: 0.05em;
+}
+
+/* Interactive Touch Heart Sensor */
+.vitals-heart-sensor {
+    width: 100%;
+    margin-top: 14px;
+    background: linear-gradient(135deg, rgba(201, 74, 94, 0.2) 0%, rgba(20, 20, 28, 0.8) 100%);
+    border: 1px solid rgba(201, 74, 94, 0.4);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(201, 74, 94, 0.15);
+    user-select: none;
+    cursor: pointer;
+}
+
+.vitals-heart-sensor:active, .vitals-heart-sensor.measuring {
+    background: linear-gradient(135deg, rgba(201, 74, 94, 0.6) 0%, rgba(230, 200, 117, 0.3) 100%);
+    box-shadow: 0 0 25px rgba(201, 74, 94, 0.6);
+    transform: scale(0.98);
+}
+
+.sensor-charge-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(201, 74, 94, 0.75) 0%, rgba(230, 200, 117, 0.85) 100%);
+    box-shadow: 0 0 20px rgba(230, 200, 117, 0.6);
+    transition: width 0.05s linear;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.sensor-heart-icon {
+    font-size: 1.3rem;
+    display: inline-block;
+    animation: pulseDot 1.5s infinite;
+}
+
+.sensor-feedback-box {
+    margin-top: 10px;
+    padding: 12px;
+    background: rgba(201, 74, 94, 0.1);
+    border: 1px dashed var(--accent-rose);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--accent-gold-light);
+}
+
+/* Heartbeat Art Generator Toolbar */
+.btn-heart-art {
+    background: linear-gradient(135deg, rgba(230, 200, 117, 0.15) 0%, rgba(201, 74, 94, 0.2) 100%);
+    border: 1px solid var(--border-gold-subtle);
+    color: var(--accent-gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+}
+
+.btn-heart-art:hover {
+    background: rgba(230, 200, 117, 0.25);
+    box-shadow: 0 0 12px rgba(230, 200, 117, 0.3);
+}
+
+/* 3D Metallic Medals (Taekwondo & Gym) */
+.achievements-grid {
+    perspective: 1000px;
+}
+
+.medal-card-3d {
+    background: linear-gradient(145deg, #1c1c24 0%, #101016 100%);
+    border: 1px solid var(--border-white-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.medal-card-3d:hover {
+    transform: translateY(-4px) rotateX(4deg);
+    border-color: var(--border-gold-subtle);
+    box-shadow: 0 10px 25px rgba(230, 200, 117, 0.2);
+}
+
+.medal-card-3d.unlocked {
+    border-color: var(--accent-gold);
+    background: linear-gradient(145deg, rgba(230, 200, 117, 0.15) 0%, #161620 100%);
+    box-shadow: 0 0 20px rgba(230, 200, 117, 0.15);
+}
+
+.medal-ribbon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 12px;
+    background: linear-gradient(90deg, #c94a5e 0%, #e6c875 50%, #c94a5e 100%);
+    border-radius: 0 0 4px 4px;
+}
+
+.medal-icon-3d {
+    font-size: 2.2rem;
+    margin-top: 6px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.medal-title {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.medal-tag {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.medal-card-3d.unlocked .medal-tag {
+    color: var(--accent-gold);
+}
+
+/* Time Capsules Container */
+.capsules-container {
+    margin-top: 24px;
+    padding: 24px;
+}
+
+.capsules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.capsule-card {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-white-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.capsule-card:hover {
+    border-color: var(--border-gold-subtle);
+    transform: translateY(-3px);
+}
+
+.capsule-card.unlocked {
+    border-color: var(--accent-gold);
+    background: linear-gradient(180deg, rgba(230, 200, 117, 0.12) 0%, rgba(14, 14, 20, 0.5) 100%);
+    box-shadow: 0 0 20px rgba(230, 200, 117, 0.15);
+}
+
+.capsule-icon {
+    font-size: 2rem;
+}
+
+.capsule-title {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.capsule-status {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.capsule-card.unlocked .capsule-status {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   12. ULTRA PREMIUM SURGICAL UPGRADES STYLING
+   -------------------------------------------------------------------------- */
+
+/* Interactive 3D Wax Seal for Letter */
+.wax-seal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.wax-seal-button {
+    width: 72px;
+    height: 72px;
+    background: radial-gradient(circle at 30% 30%, #e6c875 0%, #b89842 70%, #785e20 100%);
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(230, 200, 117, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #0a0a0c;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    user-select: none;
+}
+
+.wax-seal-button:hover, .wax-seal-button:active {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 12px 35px rgba(230, 200, 117, 0.6);
+}
+
+.wax-seal-hint {
+    font-size: 0.75rem;
+    color: var(--accent-gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Moon Phase Widget */
+.moon-phase-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-gold-subtle);
+    border-radius: var(--radius-md);
+}
+
+.moon-icon-graphic {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 10px rgba(230, 200, 117, 0.4));
+}
+
+.moon-phase-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.moon-phase-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--accent-gold-light);
+}
+
+.moon-phase-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Medical Emergency Kit (Doctor) */
+.medical-kit-box {
+    margin-top: 20px;
+    padding: 18px;
+    background: rgba(201, 74, 94, 0.08);
+    border: 1px dashed var(--accent-rose);
+    border-radius: var(--radius-md);
+}
+
+.kit-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kit-pills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.pill-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(201, 74, 94, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.pill-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-rose);
+}
+
+.pill-icon {
+    font-size: 1.3rem;
+}
+
+.pill-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Taekwondo Belt Progression Bar */
+.belt-progress-box {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-white-subtle);
+}
+
+.belt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.belt-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.belt-current-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    background: rgba(230, 200, 117, 0.12);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+}
+
+.belt-bar-track {
+    width: 100%;
+    height: 10px;
+    background: #181820;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    display: flex;
+}
+
+.belt-segment {
+    height: 100%;
+    flex: 1;
+    opacity: 0.2;
+    transition: opacity 0.4s ease;
+}
+
+.belt-segment.active {
+    opacity: 1;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.belt-white { background: #ffffff; color: #ffffff; }
+.belt-yellow { background: #e6c875; color: #e6c875; }
+.belt-green { background: #4ae280; color: #4ae280; }
+.belt-blue { background: #4a90e2; color: #4a90e2; }
+.belt-red { background: #c94a5e; color: #c94a5e; }
+.belt-black { background: #000000; color: #ffffff; border: 1px solid var(--accent-gold); }
+
+/* Museum Frame for Painting Gallery */
+.museum-gallery-box {
+    margin-top: 24px;
+    padding: 20px;
+}
+
+.museum-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 14px;
+}
+
+.museum-frame {
+    background: #0d0d12;
+    border: 6px solid #b89842;
+    border-image: linear-gradient(135deg, #e6c875 0%, #785e20 50%, #e6c875 100%) 1;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.museum-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.museum-plate {
+    margin-top: 6px;
+    background: linear-gradient(180deg, #e6c875 0%, #b89842 100%);
+    color: #0a0a0c;
+    font-family: var(--font-serif);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    text-align: center;
+    width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Story Category Scroll Bar & Touch Drag */
+.story-category-bar {
+    position: relative;
+    width: 100%;
+    margin: 14px 0 10px 0;
+}
+
+.story-category-bar #storyCategoryPills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 12px 10px 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+}
+
+.story-category-bar #storyCategoryPills::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.story-category-bar #storyCategoryPills > button {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    white-space: nowrap;
+}
+
+
